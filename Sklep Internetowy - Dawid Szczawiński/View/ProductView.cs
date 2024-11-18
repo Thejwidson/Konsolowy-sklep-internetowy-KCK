@@ -159,9 +159,11 @@ namespace Sklep_Internetowy___Dawid_Szczawiński.View
                 switch (pageChoice)
                 {
                     case "Previous Page":
+                        AnsiConsole.Clear();
                         if (pageIndex > 0) pageIndex--;
                         break;
                     case "Next Page":
+                        AnsiConsole.Clear();
                         if (pageIndex < totalPages - 1) pageIndex++;
                         break;
                     case "Back":
