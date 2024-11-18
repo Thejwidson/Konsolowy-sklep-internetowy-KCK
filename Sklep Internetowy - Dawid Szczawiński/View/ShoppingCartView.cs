@@ -70,7 +70,7 @@ namespace Sklep_Internetowy___Dawid_Szczawiński.View
 
             if (!cart.Products.Any())
             {
-                AnsiConsole.MarkupLine("[italic]Your cart is empty.[/]");
+                AnsiConsole.MarkupLine("[red]\nYour cart is empty.\n[/]");
                 return;
             }
 
@@ -101,7 +101,7 @@ namespace Sklep_Internetowy___Dawid_Szczawiński.View
                 .UseConverter(p => $"{p.ProductCategory.Name} - {p.Name} - {p.Price:C}"));
 
             _shoppingCartController.AddProductToCart(_userId, selectedProduct);
-            AnsiConsole.MarkupLine("[green]Product added to cart![/]");
+            AnsiConsole.MarkupLine("[green]Product added to cart![/]\n");
         }
 
         private void RemoveProductFromCart()
@@ -110,7 +110,7 @@ namespace Sklep_Internetowy___Dawid_Szczawiński.View
             var cart = _shoppingCartController.GetOrCreateCart(_userId);
             if (!cart.Products.Any())
             {
-                AnsiConsole.MarkupLine("[red]Your cart is empty.[/]");
+                AnsiConsole.MarkupLine("[red]Your cart is empty.[/]\n");
                 return;
             }
 
@@ -121,7 +121,7 @@ namespace Sklep_Internetowy___Dawid_Szczawiński.View
                 .UseConverter(p => $"{p.ProductCategory.Name} - {p.Name} - {p.Price:C}"));
 
             _shoppingCartController.RemoveProductFromCart(_userId, selectedProduct.ProductID);
-            AnsiConsole.MarkupLine("[green]Product removed from cart![/]");
+            AnsiConsole.MarkupLine("[green]Product removed from cart![/]\n");
         }
 
         private void Checkout()
@@ -129,11 +129,11 @@ namespace Sklep_Internetowy___Dawid_Szczawiński.View
             try
             {
                 var order = _shoppingCartController.FinalizeOrder(_userId);
-                AnsiConsole.MarkupLine("[green]Order placed successfully![/]");
+                AnsiConsole.MarkupLine("[green]Order placed successfully![/]\n");
             }
             catch (InvalidOperationException ex)
             {
-                AnsiConsole.MarkupLine($"[red]{ex.Message}[/]");
+                AnsiConsole.MarkupLine($"[red]{ex.Message}[/]\n");
             }
         }
     }
