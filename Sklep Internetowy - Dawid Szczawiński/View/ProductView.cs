@@ -73,6 +73,7 @@ namespace Sklep_Internetowy___Dawid_Szczawiński.View
         private void ViewProducts()
         {
             var products = _productController.GetAllProducts();
+            var categories = _productCategoryController.GetAllCategories();
             DisplayPagedProducts(products);
         }
 
@@ -80,6 +81,7 @@ namespace Sklep_Internetowy___Dawid_Szczawiński.View
         {
             var name = AnsiConsole.Ask<string>("Product name?");
             var products = _productController.GetProductsByName(name);
+            var categories = _productCategoryController.GetAllCategories();
             DisplayPagedProducts(products);
         }
 
@@ -99,12 +101,14 @@ namespace Sklep_Internetowy___Dawid_Szczawiński.View
 
         private void ViewProductsByLowestPrice()
         {
+            var categories = _productCategoryController.GetAllCategories();
             var products = _productController.GetProductsByLowestPrice();
             DisplayPagedProducts(products);
         }
 
         private void ViewProductsByHighestPrice()
         {
+            var categories = _productCategoryController.GetAllCategories();
             var products = _productController.GetProductsByHighestPrice();
             DisplayPagedProducts(products);
         }
@@ -114,6 +118,7 @@ namespace Sklep_Internetowy___Dawid_Szczawiński.View
             int pageIndex = 0;
             int pageSize = 9;  
             int totalPages = (int)Math.Ceiling(products.Count / (double)pageSize);
+            var categories = _productCategoryController.GetAllCategories();
 
             while (true)
             {
@@ -147,6 +152,7 @@ namespace Sklep_Internetowy___Dawid_Szczawiński.View
                 }
 
                 AnsiConsole.Render(table);
+
 
                 var pageChoices = new List<string> { "Back" };
 
