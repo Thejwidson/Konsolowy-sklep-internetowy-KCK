@@ -160,7 +160,8 @@ namespace Sklep_Internetowy___Dawid_Szczawiński.View
                 if (pageIndex < totalPages - 1) pageChoices.Add("Next Page"); 
 
                 var pageChoice = AnsiConsole.Prompt(new SelectionPrompt<string>()
-                    .AddChoices(pageChoices));
+                    .AddChoices(pageChoices)
+                    .Title(""));
 
                 switch (pageChoice)
                 {
