@@ -13,7 +13,7 @@ namespace Sklep_Internetowy___Dawid_Szczawiński.Model
         public string Login { get; set; }
         public string Password { get; set; }
         public decimal Money { get; set; }
-        public bool isAdmin { get; set; } = false;
+        public bool isAdmin { get; set; } = true;
         public List<Order> OrderList { get; set; } = new List<Order>();
         public ShoppingCart Cart { get; set; }
 

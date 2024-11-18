@@ -50,6 +50,7 @@ namespace Sklep_Internetowy___Dawid_Szczawiński.View
                         RemoveProduct();
                         break;
                     case "Logout":
+                        AnsiConsole.Clear();
                         return;
                 }
             }
@@ -59,7 +60,7 @@ namespace Sklep_Internetowy___Dawid_Szczawiński.View
         {
             var name = AnsiConsole.Ask<string>("Category [green]name[/]:");
             _productCategoryController.AddCategory(name);
-            AnsiConsole.MarkupLine("[green]Category added![/]\n");
+            AnsiConsole.MarkupLine($"[green]Category '{name}' added![/]\n");
         }
 
         private void RemoveCategory() 
@@ -72,9 +73,9 @@ namespace Sklep_Internetowy___Dawid_Szczawiński.View
                     .AddChoices(categories)
                     .UseConverter(c => c.Name));
 
-            _productCategoryController.RemoveCategory(selectedCategory.ProductCategoryID);
+            AnsiConsole.MarkupLine($"[green]Category '{selectedCategory.Name}' removed![/]\n");
 
-            AnsiConsole.MarkupLine("[green]Category removed![/]\n");
+            _productCategoryController.RemoveCategory(selectedCategory.ProductCategoryID);
         }
 
         private void AddProduct()
@@ -89,9 +90,7 @@ namespace Sklep_Internetowy___Dawid_Szczawiński.View
 
             _productController.AddProduct(name, price, categoryName);
 
-            
-
-            AnsiConsole.MarkupLine("[green]Product added![/]\n");
+            AnsiConsole.MarkupLine($"[green]Product '{name}' added![/]\n");
         }
 
 
@@ -112,8 +111,9 @@ namespace Sklep_Internetowy___Dawid_Szczawiński.View
                 .AddChoices(products)
                 .UseConverter(p => $"{p.ProductCategory.Name} - {p.Name} - {p.Price:C}"));
 
+            AnsiConsole.MarkupLine($"[green]Product '{selectedProduct.Name}' removed![/]\n");
+
             _productController.RemoveProduct(selectedProduct.ProductID);
-            AnsiConsole.MarkupLine("[green]Product removed![/]\n");
         }
     }
 

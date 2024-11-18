@@ -67,7 +67,6 @@ namespace Sklep_Internetowy___Dawid_Szczawiński.View
         {
             var cart = _shoppingCartController.GetOrCreateCart(_userId);
             var categories = _productCategoryController.GetAllCategories();
-            AnsiConsole.MarkupLine($"[bold]Shopping Cart[/]");
 
             if (!cart.Products.Any())
             {

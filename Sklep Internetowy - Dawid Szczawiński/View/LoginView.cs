@@ -58,7 +58,7 @@ namespace Sklep_Internetowy___Dawid_Szczawiński.View
             }
             AnsiConsole.Status()
                 .Spinner(Spinner.Known.Star)
-                .Start("[green]Credentials Confirmed! Chaning the view! [/]", ctx => {
+                .Start("[green]Credentials Confirmed! Changing the view! [/]", ctx => {
                     Thread.Sleep(2000);
                 });
             return user;
@@ -69,7 +69,16 @@ namespace Sklep_Internetowy___Dawid_Szczawiński.View
             var username = AnsiConsole.Ask<string>("Choose [green]username[/]:");
             var password = AnsiConsole.Ask<string>("Choose [green]password[/]:");
             var user = _userController.Register(username, password);
-            AnsiConsole.MarkupLine("[green]Registration successful![/]");
+            AnsiConsole.Status()
+                .Spinner(Spinner.Known.Star)
+                .Start("[yellow]Registering...[/]", ctx => {
+                    Thread.Sleep(1000);
+                });
+            AnsiConsole.Status()
+                .Spinner(Spinner.Known.Star)
+                .Start("[green]Registration successful! Changing the view! [/]", ctx => {
+                    Thread.Sleep(2000);
+                });
             return user;
         }
     }
