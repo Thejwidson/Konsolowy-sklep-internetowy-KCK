@@ -1,0 +1,42 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Sklep_Internetowy___Dawid_Szczawiński.Controller;
+using Sklep_Internetowy___Dawid_Szczawiński.Data;
+using Sklep_Internetowy___Dawid_Szczawiński.View;
+using Sklep_Internetowy___Dawid_Szczawiński.Model;
+using System;
+using Spectre.Console;
+
+class Program
+{
+    static void Main()
+    {     
+        using var context = new ShopDbContext();
+        context.Database.Migrate();
+
+        var userController = new UserController(context);
+        var productController = new ProductController(context);
+        var productCategoryController = new ProductCategoryController(context);
+        var shoppingCartController = new ShoppingCartController(context);
+
+        var loginView = new LoginView(userController);
+
+        while (true)
+        {
+            var user = loginView.ShowLogin();
+            if (user == null) continue;
+
+            if (user.isAdmin)
+            {
+                var adminView = new AdminView(productController, productCategoryController);
+                Console.Clear();
+                adminView.ShowAdminMenu();
+            }
+            else
+            {
+                var userView = new UserView(user, productController,productCategoryController, shoppingCartController);
+                Console.Clear();
+                userView.ShowUserMenu();
+            }
+        }
+    }
+}
