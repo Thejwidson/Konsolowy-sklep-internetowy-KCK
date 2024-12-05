@@ -38,5 +38,10 @@ namespace Sklep_Internetowy___Dawid_Szczawiński.Controller
             return user;
         }
 
+        public User GetUser(int id)
+        {
+            return _context.Users.FirstOrDefault(u => u.UserID == id);
+        }
+
     }
 }

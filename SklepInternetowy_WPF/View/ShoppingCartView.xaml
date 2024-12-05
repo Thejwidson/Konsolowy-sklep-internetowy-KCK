@@ -1,0 +1,79 @@
+﻿<UserControl x:Class="SklepInternetowy_WPF.View.ShoppingCartView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:local="clr-namespace:SklepInternetowy_WPF.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid Background="{DynamicResource MaterialDesignPaper}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Lista produktów w koszyku -->
+        <ListView x:Name="CartProductsListView"
+                  Grid.Row="0"
+                  Margin="10"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Stretch"
+                  Style="{StaticResource MaterialDesignListView}"
+                  SizeChanged="CartProductsListView_SizeChanged">
+            <ListView.View>
+                <GridView x:Name="CartGridView">
+                    <GridViewColumn Header="Nazwa"
+                                    DisplayMemberBinding="{Binding Name}" />
+                    <GridViewColumn Header="Cena"
+                                    DisplayMemberBinding="{Binding Price}" />
+                    <GridViewColumn Header="Akcja">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="Usuń"
+                                        Style="{StaticResource MaterialDesignFlatButton}"
+                                        Click="RemoveProductButton_Click"
+                                        Tag="{Binding}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+        <!-- Cena całkowita i przyciski poniżej listy -->
+        <StackPanel Orientation="Horizontal"
+                    Grid.Row="1"
+                    Margin="10"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Center">
+            <TextBlock Text="Cena całkowita:"
+                       VerticalAlignment="Center"
+                       Margin="0,0,10,0"
+                       FontWeight="Bold" />
+            <TextBlock x:Name="TotalPriceTextBlock"
+                       VerticalAlignment="Center"
+                       Margin="0,0,20,0"
+                       FontWeight="Bold"
+                       Foreground="{DynamicResource PrimaryHueMidBrush}" />
+
+            <Button Content="Powrót"
+                    Width="100"
+                    Margin="0,0,10,0"
+                    Style="{StaticResource MaterialDesignRaisedButton}"
+                    Click="BackToUserViewButton_Click" />
+
+            <Button Content="Finalizuj Zamówienie"
+                    Width="200"
+                    Style="{StaticResource MaterialDesignRaisedButton}"
+                    Click="FinalizeOrderButton_Click" />
+            <TextBlock x:Name="StatusMessageTextBlock"
+               FontSize="14"
+               Foreground="{DynamicResource PrimaryHueMidBrush}"
+               Text=""
+               TextWrapping="Wrap"
+               Margin="5,5,0,0"
+               HorizontalAlignment="Center" />
+        </StackPanel>
+    </Grid>
+</UserControl>

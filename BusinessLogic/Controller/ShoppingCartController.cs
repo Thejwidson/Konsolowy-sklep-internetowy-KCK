@@ -66,6 +66,12 @@ namespace Sklep_Internetowy___Dawid_Szczawiński.Controller
             return order;
         }
 
+        public decimal GetProductsPriceSum(int userId)
+        {
+            var cart = GetOrCreateCart(userId);
+            return cart.Products.Sum(p => p.Price);
+        }
+
         public List<Order> GetAllOrders(int userId)
         {
             return _context.Orders

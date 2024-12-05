@@ -2,6 +2,9 @@
 using Sklep_Internetowy___Dawid_Szczawiński.Controller;
 using Sklep_Internetowy___Dawid_Szczawiński.Data;
 using Sklep_Internetowy___Dawid_Szczawiński.View;
+//using SklepInternetowy_WPF/ Namespace aplikacji WPF
+
+using System.Windows; // Wymagane dla Application
 using Sklep_Internetowy___Dawid_Szczawiński.Model;
 using System;
 using Spectre.Console;

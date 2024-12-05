@@ -1,0 +1,29 @@
+﻿<UserControl x:Class="SklepInternetowy_WPF.View.UserView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SklepInternetowy_WPF.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    
+
+    <Grid Background="{DynamicResource MaterialDesignPaper}">
+        <StackPanel x:Name="MenuStackPanel" HorizontalAlignment="Center" VerticalAlignment="Center" Width="400">
+            <!-- Title / Header -->
+            
+            <TextBlock Text="User Menu" FontSize="30" FontWeight="Bold" 
+           Foreground="{DynamicResource PrimaryHueMidBrush}" TextAlignment="Center" />
+
+            <!-- Menu Buttons with Material Design style and Hover effect -->
+            <Button Content="Products" Margin="0,10,0,10" Click="ProductsButton_Click"/>
+            <Button Content="Shopping Cart" Margin="0,0,0,10" Click="ShoppingCartButton_Click"/>
+            <Button Content="View Order History" Margin="0,0,0,10" Click="OrderHistoryButton_Click"/>
+            <Button Content="Logout" Margin="0,0,0,10" Click="LogoutButton_Click"/>
+        </StackPanel>
+
+        <!-- Display Area for Order History / Products -->
+        <ContentControl x:Name="ContentArea" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10"/> 
+    </Grid>
+</UserControl>
