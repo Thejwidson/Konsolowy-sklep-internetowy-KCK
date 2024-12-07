@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using Sklep_Internetowy___Dawid_Szczawiński.Controller;
 using Sklep_Internetowy___Dawid_Szczawiński.Model;
 
@@ -132,7 +133,24 @@ namespace SklepInternetowy_WPF.View
             if (button?.Tag is Product product)
             {
                 _shoppingCartController.AddProductToCart(_userId, product);
-                MessageBox.Show($"Produkt {product.Name} został dodany do koszyka!", "Dodano do koszyka", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                var container = ProductsListView.ItemContainerGenerator.ContainerFromItem(product) as ListViewItem;
+                if (container != null)
+                {
+                    container.Tag = $"{product.Name} dodany do koszyka!";
+                }
+
+                
+                ClearTagAfterDelay(container, TimeSpan.FromSeconds(3));
+            }
+        }
+
+        private async void ClearTagAfterDelay(ListViewItem item, TimeSpan delay)
+        {
+            await Task.Delay(delay);
+            if (item != null)
+            {
+                item.Tag = string.Empty;
             }
         }
     }

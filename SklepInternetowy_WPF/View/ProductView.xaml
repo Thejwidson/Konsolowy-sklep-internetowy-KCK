@@ -67,43 +67,33 @@
 
         <!-- Lista produktów -->
         <ListView x:Name="ProductsListView"
-                  Grid.Row="1"
-                  Margin="10"
-                  HorizontalAlignment="Stretch"
-                  VerticalAlignment="Stretch">
+          Grid.Row="1"
+          Margin="10"
+          HorizontalAlignment="Stretch"
+          VerticalAlignment="Stretch">
             <ListView.View>
                 <GridView x:Name="ProductsGridView">
-                    <GridViewColumn Header="Nazwa"
-                                    DisplayMemberBinding="{Binding Name}">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding}" TextAlignment="Left" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Header="Cena"
-                                    DisplayMemberBinding="{Binding Price}">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding}" TextAlignment="Center" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Header="Kategoria"
-                                    DisplayMemberBinding="{Binding ProductCategory.Name}">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding}" TextAlignment="Center" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
+                    <GridViewColumn Header="Nazwa" Width="150" DisplayMemberBinding="{Binding Name}" />
+                    <GridViewColumn Header="Cena" DisplayMemberBinding="{Binding Price}" />
+                    <GridViewColumn Header="Kategoria" DisplayMemberBinding="{Binding ProductCategory.Name}" />
                     <GridViewColumn Header="Akcja">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <Button Content="Dodaj do koszyka"
-                                        Style="{StaticResource MaterialDesignFlatButton}"
-                                        Click="AddToCartButton_Click"
-                                        Tag="{Binding}" />
+                                Style="{StaticResource MaterialDesignFlatButton}"
+                                Click="AddToCartButton_Click"
+                                Tag="{Binding}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="" Width="350">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ListViewItem}, Path=Tag}" 
+                                   TextAlignment="Left"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Stretch"
+                                   Foreground="Green"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>

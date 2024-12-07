@@ -22,6 +22,10 @@
                     Click="LoginButton_Click" />
             <Button Content="Register" 
                     Click="RegisterButton_Click" />
+            <!-- <Button Content="Console App" 
+    Margin="0,10,0,10" 
+    Click="ConsoleAppButton_Click" /> -->
+            
             <Button Content="Exit" 
                     Margin="0,10,0,10" 
                     Click="ExitButton_Click" />

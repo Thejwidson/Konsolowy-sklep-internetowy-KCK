@@ -8,6 +8,7 @@ using System.Windows; // Wymagane dla Application
 using Sklep_Internetowy___Dawid_Szczawiński.Model;
 using System;
 using Spectre.Console;
+using System.Diagnostics;
 
 class Program
 {
@@ -41,5 +42,17 @@ class Program
                 userView.ShowUserMenu();
             }
         }
+
+        
+
+        static void StartWpfApp()
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "SklepInternetowy_WPF.exe", // Nazwa pliku WPF (upewnij się, że jest poprawna)
+                UseShellExecute = true
+            });
+        }
+
     }
 }

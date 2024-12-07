@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,7 +27,7 @@ namespace Sklep_Internetowy___Dawid_Szczawiński.View
 
             var choice = AnsiConsole.Prompt(new SelectionPrompt<string>()
                 .Title("Login or Register?")
-                .AddChoices("Login", "Register", "Exit"));
+                .AddChoices("Login", "Register","WPF_APP","Exit"));
 
             switch (choice)
             {
@@ -34,6 +35,9 @@ namespace Sklep_Internetowy___Dawid_Szczawiński.View
                     return Login();
                 case "Register":
                     return Register();
+                case "WPF_APP":
+                    StartWpfApp();
+                    return null;
                 case "Exit":
                     Environment.Exit(0);
                     break;
@@ -80,6 +84,23 @@ namespace Sklep_Internetowy___Dawid_Szczawiński.View
                     Thread.Sleep(2000);
                 });
             return user;
+        }
+
+        private void StartWpfApp()
+        {
+            try
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = "SklepInternetowy_WPF.exe", // Plik wykonywalny WPF
+                    UseShellExecute = true
+                });
+                Environment.Exit(0); // Opcjonalnie zamknij aplikację konsolową po uruchomieniu WPF
+            }
+            catch (Exception ex)
+            {
+                AnsiConsole.MarkupLine($"[red]Error starting WPF application: {ex.Message}[/]");
+            }
         }
     }
 

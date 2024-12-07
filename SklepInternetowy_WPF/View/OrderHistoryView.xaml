@@ -31,7 +31,7 @@
                 <GridView>
                     <GridViewColumn Header="Data zamówienia" Width="200" DisplayMemberBinding="{Binding OrderDate}" />
                     <GridViewColumn Header="Cena" Width="100" DisplayMemberBinding="{Binding Price}" />
-                    <GridViewColumn Header="Produkty">
+                    <GridViewColumn Header="Produkty" Width="150">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <ItemsControl ItemsSource="{Binding Products}">

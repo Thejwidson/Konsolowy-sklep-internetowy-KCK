@@ -1,6 +1,7 @@
 ﻿using Sklep_Internetowy___Dawid_Szczawiński.Controller;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -105,6 +106,14 @@ namespace SklepInternetowy_WPF.View
             }
         }
 
+        public void ConsoleAppButton_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "Sklep_Internetowy___Dawid_Szczawiński.exe", // Nazwa pliku aplikacji konsolowej
+                UseShellExecute = true
+            });
+        }
 
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {

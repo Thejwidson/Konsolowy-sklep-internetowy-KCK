@@ -24,7 +24,8 @@
             <ListView.View>
                 <GridView x:Name="CartGridView">
                     <GridViewColumn Header="Nazwa"
-                                    DisplayMemberBinding="{Binding Name}" />
+                                    DisplayMemberBinding="{Binding Name}"
+                                    Width="150"/>
                     <GridViewColumn Header="Cena"
                                     DisplayMemberBinding="{Binding Price}" />
                     <GridViewColumn Header="Akcja">
