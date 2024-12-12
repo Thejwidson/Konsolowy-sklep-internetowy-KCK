@@ -40,13 +40,21 @@ namespace SklepInternetowy_WPF.View
             _userController = userController;
         }
 
-        // Załadowanie kategorii do ComboBox
         private void LoadCategories()
+        {
+            var categories = _productCategoryController.GetAllCategories();
+            ProductCategoryComboBox.ItemsSource = categories; // For Product-related ComboBox
+            CategoryRadioList.ItemsSource = categories; // Bind to ItemsControl
+        }
+
+
+        // Załadowanie kategorii do ComboBox
+        /*private void LoadCategories()
         {
             var categories = _productCategoryController.GetAllCategories();
             CategoryComboBox.ItemsSource = categories;
             ProductCategoryComboBox.ItemsSource = categories;
-        }
+        }*/
 
         // Załadowanie produktów do ComboBox
         private void LoadProducts()
@@ -75,7 +83,7 @@ namespace SklepInternetowy_WPF.View
             CategoryNameTextBox.Clear();
         }
 
-        private void RemoveCategoryButton_Click(object sender, RoutedEventArgs e)
+        /*private void RemoveCategoryButton_Click(object sender, RoutedEventArgs e)
         {
             var selectedCategory = (ProductCategory)CategoryComboBox.SelectedItem;
             if (selectedCategory == null)
@@ -87,7 +95,83 @@ namespace SklepInternetowy_WPF.View
             _productCategoryController.RemoveCategory(selectedCategory.ProductCategoryID);
             LoadCategories();
             SetStatusMessage($"Category '{selectedCategory.Name}' has been removed.");
+        }*/
+
+        private void RemoveSingleCategoryButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Przechodzimy przez elementy ItemsControl, aby znaleźć zaznaczone RadioButton
+            ProductCategory selectedCategory = null;
+
+            foreach (var item in CategoryRadioList.Items)
+            {
+                // Pobranie kontenera dla elementu
+                var container = (ContentPresenter)CategoryRadioList.ItemContainerGenerator.ContainerFromItem(item);
+
+                if (container == null) continue;
+
+                // Szukamy RadioButton w drzewie wizualnym
+                var radioButton = FindVisualChild<RadioButton>(container);
+
+                if (radioButton != null && radioButton.IsChecked == true)
+                {
+                    // Pobranie przypisanego obiektu kategorii
+                    selectedCategory = (ProductCategory)radioButton.Tag;
+                    break;
+                }
+            }
+
+            if (selectedCategory == null)
+            {
+                SetStatusMessage("Proszę wybrać kategorię do usunięcia.", true);
+                return;
+            }
+
+            // Wyświetlamy okno potwierdzenia
+            var result = MessageBox.Show(
+                $"Czy na pewno chcesz usunąć kategorię '{selectedCategory.Name}'?",
+                "Potwierdzenie usunięcia",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning
+            );
+
+            // Jeżeli użytkownik wybierze 'No', rezygnujemy z usuwania
+            if (result != MessageBoxResult.Yes)
+            {
+                SetStatusMessage("Usuwanie anulowane.");
+                return;
+            }
+
+
+            // Usuwamy kategorię
+            _productCategoryController.RemoveCategory(selectedCategory.ProductCategoryID);
+
+            // Odświeżamy listę
+            LoadCategories();
+            SetStatusMessage($"Kategoria '{selectedCategory.Name}' została usunięta.");
         }
+
+        // Metoda pomocnicza do znajdowania elementów w drzewie wizualnym
+        private static T FindVisualChild<T>(DependencyObject obj) where T : DependencyObject
+        {
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(obj); i++)
+            {
+                var child = VisualTreeHelper.GetChild(obj, i);
+                if (child is T tChild)
+                {
+                    return tChild;
+                }
+
+                var childOfChild = FindVisualChild<T>(child);
+                if (childOfChild != null)
+                {
+                    return childOfChild;
+                }
+            }
+            return null;
+        }
+
+
+
 
         private void AddProductButton_Click(object sender, RoutedEventArgs e)
         {
@@ -122,6 +206,22 @@ namespace SklepInternetowy_WPF.View
             }
 
             var product = (selectedProduct as dynamic).Product;
+
+            // Wyświetlenie okna potwierdzenia
+            var result = MessageBox.Show(
+                $"Are you sure you want to remove the product '{product.Name}'?",
+                "Confirm Deletion",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning
+            );
+
+            // Anulowanie, jeśli użytkownik wybierze "No"
+            if (result != MessageBoxResult.Yes)
+            {
+                SetStatusMessage("Product removal cancelled.");
+                return;
+            }
+
             _productController.RemoveProduct(product.ProductID);
             LoadProducts();
             SetStatusMessage($"Product '{product.Name}' has been removed.");

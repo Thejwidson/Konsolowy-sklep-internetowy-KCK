@@ -49,14 +49,18 @@
 
                         <!-- Remove Category Section -->
                         <TextBlock Text="Remove Category" FontSize="18" FontWeight="Bold" Margin="20,10,0,10"
-                                   Foreground="{DynamicResource PrimaryHueDarkBrush}" />
-                        <ComboBox x:Name="CategoryComboBox" Width="300"
-                                  Style="{StaticResource MaterialDesignComboBox}"
-                                  DisplayMemberPath="Name" />
-                        <Button Content="Remove"
-                                Style="{StaticResource MaterialDesignFlatButton}"
-                                Margin="0,10,0,0"
-                                Click="RemoveCategoryButton_Click" />
+           Foreground="{DynamicResource PrimaryHueDarkBrush}" />
+                        <ItemsControl x:Name="CategoryRadioList" Margin="0,0,0,10">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <RadioButton Content="{Binding Name}" GroupName="Categories" Tag="{Binding}" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <Button Content="Remove Selected"
+        Style="{StaticResource MaterialDesignFlatButton}"
+        Margin="0,10,0,0"
+        Click="RemoveSingleCategoryButton_Click" />
                     </StackPanel>
                 </Grid>
             </TabItem>
