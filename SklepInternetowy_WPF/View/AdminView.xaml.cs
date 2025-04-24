@@ -27,7 +27,6 @@ namespace SklepInternetowy_WPF.View
         private readonly MainWindow _mainWindow;
         private readonly UserController _userController;
 
-        // Konstruktor przyjmujący kontrolery jako argumenty
         public AdminView(ProductController productController, ProductCategoryController productCategoryController, MainWindow mainWindow, UserController userController)
         {
             InitializeComponent();
@@ -36,15 +35,17 @@ namespace SklepInternetowy_WPF.View
 
             LoadCategories();
             LoadProducts();
+            
             _mainWindow = mainWindow;
             _userController = userController;
+            LoadUsers();
         }
 
         private void LoadCategories()
         {
             var categories = _productCategoryController.GetAllCategories();
-            ProductCategoryComboBox.ItemsSource = categories; // For Product-related ComboBox
-            CategoryRadioList.ItemsSource = categories; // Bind to ItemsControl
+            ProductCategoryComboBox.ItemsSource = categories; 
+            CategoryRadioList.ItemsSource = categories; 
         }
 
 
@@ -56,10 +57,10 @@ namespace SklepInternetowy_WPF.View
             ProductCategoryComboBox.ItemsSource = categories;
         }*/
 
-        // Załadowanie produktów do ComboBox
-        private void LoadProducts()
+        //ComboBox
+        private async void LoadProducts()
         {
-            var products = _productController.GetAllProducts();
+            var products = await Task.Run(() => _productController.GetAllProducts());
             ProductComboBox.ItemsSource = products.Select(p => new
             {
                 Name = $"{p.ProductCategory.Name} - {p.Name} - {p.Price:C}",
@@ -67,7 +68,6 @@ namespace SklepInternetowy_WPF.View
             }).ToList();
         }
 
-        // Obsługa przycisku do dodawania kategorii
         private void AddCategoryButton_Click(object sender, RoutedEventArgs e)
         {
             var categoryName = CategoryNameTextBox.Text.Trim();
@@ -99,22 +99,18 @@ namespace SklepInternetowy_WPF.View
 
         private void RemoveSingleCategoryButton_Click(object sender, RoutedEventArgs e)
         {
-            // Przechodzimy przez elementy ItemsControl, aby znaleźć zaznaczone RadioButton
             ProductCategory selectedCategory = null;
 
             foreach (var item in CategoryRadioList.Items)
             {
-                // Pobranie kontenera dla elementu
                 var container = (ContentPresenter)CategoryRadioList.ItemContainerGenerator.ContainerFromItem(item);
 
                 if (container == null) continue;
 
-                // Szukamy RadioButton w drzewie wizualnym
                 var radioButton = FindVisualChild<RadioButton>(container);
 
                 if (radioButton != null && radioButton.IsChecked == true)
                 {
-                    // Pobranie przypisanego obiektu kategorii
                     selectedCategory = (ProductCategory)radioButton.Tag;
                     break;
                 }
@@ -126,7 +122,6 @@ namespace SklepInternetowy_WPF.View
                 return;
             }
 
-            // Wyświetlamy okno potwierdzenia
             var result = MessageBox.Show(
                 $"Czy na pewno chcesz usunąć kategorię '{selectedCategory.Name}'?",
                 "Potwierdzenie usunięcia",
@@ -134,7 +129,6 @@ namespace SklepInternetowy_WPF.View
                 MessageBoxImage.Warning
             );
 
-            // Jeżeli użytkownik wybierze 'No', rezygnujemy z usuwania
             if (result != MessageBoxResult.Yes)
             {
                 SetStatusMessage("Usuwanie anulowane.");
@@ -142,15 +136,12 @@ namespace SklepInternetowy_WPF.View
             }
 
 
-            // Usuwamy kategorię
             _productCategoryController.RemoveCategory(selectedCategory.ProductCategoryID);
 
-            // Odświeżamy listę
             LoadCategories();
             SetStatusMessage($"Kategoria '{selectedCategory.Name}' została usunięta.");
         }
 
-        // Metoda pomocnicza do znajdowania elementów w drzewie wizualnym
         private static T FindVisualChild<T>(DependencyObject obj) where T : DependencyObject
         {
             for (int i = 0; i < VisualTreeHelper.GetChildrenCount(obj); i++)
@@ -207,7 +198,6 @@ namespace SklepInternetowy_WPF.View
 
             var product = (selectedProduct as dynamic).Product;
 
-            // Wyświetlenie okna potwierdzenia
             var result = MessageBox.Show(
                 $"Are you sure you want to remove the product '{product.Name}'?",
                 "Confirm Deletion",
@@ -215,7 +205,6 @@ namespace SklepInternetowy_WPF.View
                 MessageBoxImage.Warning
             );
 
-            // Anulowanie, jeśli użytkownik wybierze "No"
             if (result != MessageBoxResult.Yes)
             {
                 SetStatusMessage("Product removal cancelled.");
@@ -227,7 +216,6 @@ namespace SklepInternetowy_WPF.View
             SetStatusMessage($"Product '{product.Name}' has been removed.");
         }
 
-        // Pomocnicza metoda ustawiania komunikatów
         private async void SetStatusMessage(string message, bool isError = false)
         {
             StatusMessageTextBlock.Text = message;
@@ -238,6 +226,33 @@ namespace SklepInternetowy_WPF.View
             await Task.Delay(3000);
             StatusMessageTextBlock.Text = "";
         }
+
+        private void LoadUsers()
+        {
+            try
+            {
+                var users = _userController?.GetUsers();
+
+                if (UserListBox == null)
+                {
+                    MessageBox.Show("Error: UserListBox is null!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                if (users == null)
+                {
+                    MessageBox.Show("Error: GetUsers() returned null!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                UserListBox.ItemsSource = users;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading users: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
 
         private void LogoutButton_Click(object sender, RoutedEventArgs e)
         {

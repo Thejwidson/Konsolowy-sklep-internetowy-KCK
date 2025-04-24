@@ -44,7 +44,6 @@ namespace SklepInternetowy_WPF.View
 
         private void ShowProducts()
         {
-            // Widok produktów
             var productView = new ProductView(_productController, _productCategoryController, _shoppingCartController, _currentUser.UserID, _mainWindow, _userController);
             ContentArea.Content = productView;
         }
@@ -63,7 +62,6 @@ namespace SklepInternetowy_WPF.View
 
         private void Logout()
         {
-            // Przełącz widok na logowanie (przykład)
             var loginView = new LoginView(_mainWindow, _userController);
             ContentArea.Content = loginView;
         }

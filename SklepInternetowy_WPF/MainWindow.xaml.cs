@@ -31,18 +31,15 @@ namespace SklepInternetowy_WPF
         {
             InitializeComponent();
 
-            // Tworzenie instancji kontrolerów
             _context = new ShopDbContext();
             _userController = new UserController(_context);
             _productController = new ProductController(_context);
             _productCategoryController = new ProductCategoryController(_context);
             _shoppingCartController = new ShoppingCartController(_context);
 
-            // Początkowy widok - logowanie
             SwitchView(new View.LoginView(this, _userController));
         }
 
-        // Metoda do przełączania widoków
         public void SwitchView(object view)
         {
             MainContent.Content = view;

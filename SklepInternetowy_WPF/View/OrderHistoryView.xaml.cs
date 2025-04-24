@@ -37,12 +37,10 @@ namespace SklepInternetowy_WPF.View
             LoadOrders();
         }
 
-        private void LoadOrders()
+        private async void LoadOrders()
         {
-            // Pobierz zamówienia użytkownika
-            var orders = _shoppingCartController.GetAllOrders(_userId);
+            var orders = await Task.Run(() => _shoppingCartController.GetAllOrders(_userId));
 
-            // Przypisz do ListView
             OrdersListView.ItemsSource = orders;
         }
 

@@ -1,7 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Sklep_Internetowy___Dawid_Szczawiński.Data;
 using Sklep_Internetowy___Dawid_Szczawiński.Model;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 using System;
+using static System.Net.Mime.MediaTypeNames;
+using System.Reflection.Metadata;
 
 namespace Sklep_Internetowy___Dawid_Szczawiński.Controller
 {
@@ -63,6 +67,8 @@ namespace Sklep_Internetowy___Dawid_Szczawiński.Controller
             cart.Products.Clear();
             _context.SaveChanges();
 
+            GenerateReceipt(order);
+
             return order;
         }
 
@@ -71,6 +77,50 @@ namespace Sklep_Internetowy___Dawid_Szczawiński.Controller
             var cart = GetOrCreateCart(userId);
             return cart.Products.Sum(p => p.Price);
         }
+
+        private void GenerateReceipt(Order order)
+        {
+            string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            string filePath = Path.Combine(desktopPath, $"Receipt_{order.OrderDate:yyyyMMdd_HHmmss}.pdf");
+
+            using (FileStream fs = new FileStream(filePath, FileMode.Create))
+            {
+                iTextSharp.text.Document doc = new iTextSharp.text.Document();
+                PdfWriter writer = PdfWriter.GetInstance(doc, fs);
+                doc.Open();
+
+                iTextSharp.text.Font titleFont = iTextSharp.text.FontFactory.GetFont(iTextSharp.text.FontFactory.TIMES_ROMAN, 16);
+                iTextSharp.text.Font normalFont = iTextSharp.text.FontFactory.GetFont(iTextSharp.text.FontFactory.TIMES_ROMAN, 12);
+
+                doc.Add(new iTextSharp.text.Paragraph("Paragon", titleFont));
+                doc.Add(new iTextSharp.text.Paragraph($"Data: {order.OrderDate:yyyy-MM-dd HH:mm:ss}", normalFont));
+                doc.Add(new iTextSharp.text.Paragraph($"ID zamówienia: {order.OrderID}", normalFont));
+                doc.Add(new iTextSharp.text.Paragraph("\n"));
+
+                PdfPTable table = new PdfPTable(3);
+                table.AddCell("Produkt");
+                table.AddCell("Cena");
+                table.AddCell("Ilość");
+
+                foreach (var product in order.Products)
+                {
+                    table.AddCell(product.Name);
+                    table.AddCell($"{product.Price:C}");
+                    table.AddCell("1");
+                }
+
+                doc.Add(table);
+                doc.Add(new iTextSharp.text.Paragraph("\n"));
+                doc.Add(new iTextSharp.text.Paragraph($"Suma: {order.Price:C}", titleFont));
+
+                doc.Close();
+                writer.Close();
+            }
+
+            Console.WriteLine($"Paragon zapisany jako: {filePath}");
+        }
+
+
 
         public List<Order> GetAllOrders(int userId)
         {

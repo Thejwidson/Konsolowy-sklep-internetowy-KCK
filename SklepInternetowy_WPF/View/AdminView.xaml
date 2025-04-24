@@ -107,6 +107,17 @@
                     </StackPanel>
                 </Grid>
             </TabItem>
+            <TabItem Header="Manage Users">
+                <Grid Margin="10">
+                    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock Text="User List" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"
+                       Foreground="{DynamicResource PrimaryHueDarkBrush}" />
+                        <ListBox x:Name="UserListBox" Width="400" Height="200"
+                     DisplayMemberPath="Login"
+                     Style="{StaticResource MaterialDesignListBox}" />
+                    </StackPanel>
+                </Grid>
+            </TabItem>
         </TabControl>
 
         <!-- Pole tekstowe na dole -->

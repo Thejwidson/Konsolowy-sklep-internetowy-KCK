@@ -39,26 +39,22 @@ namespace SklepInternetowy_WPF.View
 
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
-            // Wyświetl ProgressBar
             LoginProgressBar.Visibility = Visibility.Visible;
-            MessageTextBlock.Text = ""; // Wyczyść komunikaty
-            await Task.Delay(2000); // Symulacja opóźnienia 2 sekund
+            MessageTextBlock.Text = ""; 
+            await Task.Delay(2000); 
 
-            // Pobierz dane logowania
             var username = UsernameTextBox.Text;
             var password = PasswordBox.Password;
 
             var user = _userController.Login(username, password);
-            LoginProgressBar.Visibility = Visibility.Collapsed; // Ukryj ProgressBar
+            LoginProgressBar.Visibility = Visibility.Collapsed; 
 
             if (user != null)
             {
-                // Wyświetl komunikat o sukcesie
                 MessageTextBlock.Foreground = new SolidColorBrush(Colors.Green);
                 MessageTextBlock.Text = $"Welcome, {user.Login}!";
-                await Task.Delay(1000); // Opóźnienie przed przełączeniem widoku
+                await Task.Delay(1000); 
 
-                // Przełącz widok
                 if (user.isAdmin)
                 {
                     _mainWindow.SwitchToAdminView();
@@ -70,7 +66,6 @@ namespace SklepInternetowy_WPF.View
             }
             else
             {
-                // Wyświetl komunikat o błędzie
                 MessageTextBlock.Foreground = new SolidColorBrush(Colors.Red);
                 MessageTextBlock.Text = "Invalid credentials! Please try again.";
             }
@@ -78,29 +73,25 @@ namespace SklepInternetowy_WPF.View
 
         private async void RegisterButton_Click(object sender, RoutedEventArgs e)
         {
-            // Wyświetl ProgressBar
             LoginProgressBar.Visibility = Visibility.Visible;
-            MessageTextBlock.Text = ""; // Wyczyść komunikaty
-            await Task.Delay(2000); // Symulacja opóźnienia 2 sekund
+            MessageTextBlock.Text = ""; 
+            await Task.Delay(2000); 
 
-            // Pobierz dane rejestracji
             var username = UsernameTextBox.Text;
             var password = PasswordBox.Password;
 
             try
             {
                 var user = _userController.Register(username, password);
-                LoginProgressBar.Visibility = Visibility.Collapsed; // Ukryj ProgressBar
+                LoginProgressBar.Visibility = Visibility.Collapsed; 
 
-                // Wyświetl komunikat o sukcesie
                 MessageTextBlock.Foreground = new SolidColorBrush(Colors.Green);
                 MessageTextBlock.Text = $"User {user.Login} registered successfully!";
-                await Task.Delay(1000); // Opóźnienie dla wizualnego efektu
+                await Task.Delay(1000); 
             }
             catch (Exception ex)
             {
-                // Wyświetl komunikat o błędzie
-                LoginProgressBar.Visibility = Visibility.Collapsed; // Ukryj ProgressBar
+                LoginProgressBar.Visibility = Visibility.Collapsed; 
                 MessageTextBlock.Foreground = new SolidColorBrush(Colors.Red);
                 MessageTextBlock.Text = $"Registration failed: {ex.Message}";
             }
@@ -110,7 +101,7 @@ namespace SklepInternetowy_WPF.View
         {
             Process.Start(new ProcessStartInfo
             {
-                FileName = "Sklep_Internetowy___Dawid_Szczawiński.exe", // Nazwa pliku aplikacji konsolowej
+                FileName = "Sklep_Internetowy___Dawid_Szczawiński.exe", 
                 UseShellExecute = true
             });
         }

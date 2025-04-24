@@ -34,10 +34,8 @@ namespace SklepInternetowy_WPF.View
 
         private void LoadCategories()
         {
-            // Pobierz kategorie z kontrolera
             var categories = _productCategoryController.GetAllCategoriesNames();
 
-            // Dodaj "Wszystkie kategorie" jako pierwszą opcję
             FilterByCategoryComboBox.Items.Clear();
             FilterByCategoryComboBox.Items.Add("Wszystkie kategorie");
             foreach (var category in categories)
@@ -45,7 +43,6 @@ namespace SklepInternetowy_WPF.View
                 FilterByCategoryComboBox.Items.Add(category);
             }
 
-            // Ustaw domyślną wartość
             FilterByCategoryComboBox.SelectedIndex = 0;
         }
         
@@ -55,15 +52,15 @@ namespace SklepInternetowy_WPF.View
             var gridView = ProductsGridView;
             if (listView == null || gridView == null) return;
 
-            // Oblicz dostępne miejsce w ListView
-            var totalWidth = listView.ActualWidth - SystemParameters.VerticalScrollBarWidth; // Odejmujemy scrollbar
+            //dostępne miejsce w ListView
+            var totalWidth = listView.ActualWidth - SystemParameters.VerticalScrollBarWidth; 
             if (totalWidth > 0)
             {
                 // Dynamiczne ustawianie szerokości kolumn
-                gridView.Columns[0].Width = totalWidth * 0.3; // 40% dla "Nazwa"
-                gridView.Columns[1].Width = totalWidth * 0.2; // 20% dla "Cena"
-                gridView.Columns[2].Width = totalWidth * 0.3; // 30% dla "Kategoria"
-                gridView.Columns[3].Width = totalWidth * 0.2; // 10% dla "Akcja"
+                gridView.Columns[0].Width = totalWidth * 0.3; // 40% dla nazwy
+                gridView.Columns[1].Width = totalWidth * 0.2; // 20% dla ceny
+                gridView.Columns[2].Width = totalWidth * 0.3; // 30% dla kategori
+                gridView.Columns[3].Width = totalWidth * 0.2; // 10% dla akcji
             }
         }
 
@@ -79,9 +76,9 @@ namespace SklepInternetowy_WPF.View
             }
         }
 
-        private void LoadProducts()
+        private async void LoadProducts()
         {
-            var products = _productController.GetAllProducts();
+            var products = await Task.Run(() => _productController.GetAllProducts());
             ProductsListView.ItemsSource = products;
         }
 
@@ -91,18 +88,16 @@ namespace SklepInternetowy_WPF.View
             _mainWindow.SwitchToUserView(user);
         }
 
-        private void ApplyFiltersButton_Click(object sender, RoutedEventArgs e)
+        private async void ApplyFiltersButton_Click(object sender, RoutedEventArgs e)
         {
-            var filteredProducts = _productController.GetAllProducts();
+            var filteredProducts = await Task.Run(() => _productController.GetAllProducts());
 
-            // Filtrowanie po nazwie
             if (!string.IsNullOrWhiteSpace(FilterByNameTextBox.Text))
             {
                 filteredProducts = _productController.GetProductsByName(FilterByNameTextBox.Text);
             }
 
-            // Filtrowanie po kategorii
-            if (FilterByCategoryComboBox.SelectedIndex > 0) // Pomijamy "Wszystkie kategorie"
+            if (FilterByCategoryComboBox.SelectedIndex > 0) 
             {
                 var selectedCategory = FilterByCategoryComboBox.SelectedItem.ToString();
                 var categoryObj = _productCategoryController.GetAllCategories()
@@ -113,17 +108,15 @@ namespace SklepInternetowy_WPF.View
                 }
             }
 
-            // Sortowanie po cenie
-            if (SortByPriceComboBox.SelectedIndex == 1) // Cena rosnąco
+            if (SortByPriceComboBox.SelectedIndex == 1) 
             {
                 filteredProducts = _productController.GetProductsByLowestPrice();
             }
-            else if (SortByPriceComboBox.SelectedIndex == 2) // Cena malejąco
+            else if (SortByPriceComboBox.SelectedIndex == 2) 
             {
                 filteredProducts = _productController.GetProductsByHighestPrice();
             }
 
-            // Przypisz przefiltrowane produkty do ListView
             ProductsListView.ItemsSource = filteredProducts;
         }
 

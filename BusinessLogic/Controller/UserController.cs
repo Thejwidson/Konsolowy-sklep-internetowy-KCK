@@ -43,5 +43,50 @@ namespace Sklep_Internetowy___Dawid_Szczawiński.Controller
             return _context.Users.FirstOrDefault(u => u.UserID == id);
         }
 
+
+        public List<User> GetUsers()
+        {
+
+            string logFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "log.txt");
+
+            try
+            {
+                using (StreamWriter sw = new StreamWriter(logFilePath, true))
+                {
+                    if (_context == null)
+                    {
+                        sw.WriteLine($"{DateTime.Now} - Error: _context is null!");
+                        return new List<User>();
+                    }
+
+                    if (_context.Users == null)
+                    {
+                        sw.WriteLine($"{DateTime.Now} - Error: _context.Users is null!");
+                        return new List<User>();
+                    }
+
+                    var users = _context.Users.Where(u => u.isAdmin == false).ToList();
+
+                    if (users == null)
+                    {
+                        sw.WriteLine($"{DateTime.Now} - Error: users list is null!");
+                        return new List<User>();
+                    }
+
+                    sw.WriteLine($"{DateTime.Now} - Loaded {users.Count} users.");
+                    return users;
+                }
+            }
+            catch (Exception ex)
+            {
+                File.AppendAllText(logFilePath, $"{DateTime.Now} - Database error: {ex.Message}{Environment.NewLine}");
+                return new List<User>();
+            }
+        }
+
+
+
+
+
     }
 }

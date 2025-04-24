@@ -13,7 +13,7 @@ namespace SklepInternetowy_WPF
     /// </summary>
     public partial class App : Application
     {
-        // Możesz dodać tutaj logikę uruchamiania aplikacji, jeżeli jest taka potrzeba
+        
     }
 
 }

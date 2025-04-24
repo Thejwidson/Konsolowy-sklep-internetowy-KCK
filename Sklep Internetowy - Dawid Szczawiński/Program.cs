@@ -31,7 +31,7 @@ class Program
 
             if (user.isAdmin)
             {
-                var adminView = new AdminView(productController, productCategoryController);
+                var adminView = new AdminView(productController, productCategoryController, userController);
                 Console.Clear();
                 adminView.ShowAdminMenu();
             }

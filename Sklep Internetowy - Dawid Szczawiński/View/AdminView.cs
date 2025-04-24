@@ -7,6 +7,8 @@ using Sklep_Internetowy___Dawid_Szczawiński.Controller;
 using Sklep_Internetowy___Dawid_Szczawiński.Model;
 using Spectre.Console;
 using System.Linq;
+using System.Configuration;
+using System.Runtime.CompilerServices;
 
 
 namespace Sklep_Internetowy___Dawid_Szczawiński.View
@@ -15,11 +17,14 @@ namespace Sklep_Internetowy___Dawid_Szczawiński.View
     {
         private readonly ProductController _productController;
         private readonly ProductCategoryController _productCategoryController;
+        private readonly UserController _userController;
 
-        public AdminView(ProductController productController, ProductCategoryController productCategoryController)
+        public AdminView(ProductController productController, ProductCategoryController productCategoryController, UserController userController)
         {
             _productController = productController;
             _productCategoryController = productCategoryController;
+            _userController = userController;
+
         }
 
         public void ShowAdminMenu()
@@ -33,7 +38,7 @@ namespace Sklep_Internetowy___Dawid_Szczawiński.View
             while (true)
             {
                 var choice = AnsiConsole.Prompt(new SelectionPrompt<string>()
-                    .AddChoices("Add Category", "Remove Category", "Add Product", "Remove Product", "Logout"));
+                    .AddChoices("Add Category", "Remove Category", "Add Product", "Remove Product", "Users", "Logout"));
 
                 switch (choice)
                 {
@@ -48,6 +53,9 @@ namespace Sklep_Internetowy___Dawid_Szczawiński.View
                         break;
                     case "Remove Product":
                         RemoveProduct();
+                        break;
+                    case "Users":
+                        Users();
                         break;
                     case "Logout":
                         AnsiConsole.Clear();
@@ -93,8 +101,6 @@ namespace Sklep_Internetowy___Dawid_Szczawiński.View
             AnsiConsole.MarkupLine($"[green]Product '{name}' added![/]\n");
         }
 
-
-
         private void RemoveProduct()
         {
             var categories = _productCategoryController.GetAllCategories();
@@ -114,6 +120,21 @@ namespace Sklep_Internetowy___Dawid_Szczawiński.View
             AnsiConsole.MarkupLine($"[green]Product '{selectedProduct.Name}' removed![/]\n");
 
             _productController.RemoveProduct(selectedProduct.ProductID);
+        }
+
+        private void Users()
+        {
+            var users = _userController.GetUsers();
+            if (!users.Any())
+            {
+                AnsiConsole.MarkupLine("[red]No users available![/]\n");
+                return;
+            }
+            AnsiConsole.MarkupLine("[green]Users:[/]");
+            foreach (var user in users)
+            {
+                AnsiConsole.MarkupLine($"[green]{user.Login}[/]");
+            }
         }
     }
 

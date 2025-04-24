@@ -2,6 +2,7 @@
 using Sklep_Internetowy___Dawid_Szczawiński.Model;
 using System;
 using System.Collections.Generic;
+using Microsoft.Toolkit.Uwp.Notifications;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
@@ -46,12 +47,10 @@ namespace SklepInternetowy_WPF.View
         }
         private void LoadCartProducts()
         {
-            // Pobieramy koszyk użytkownika
             var cart = _shoppingCartController.GetOrCreateCart(_userId);
             CartProductsListView.ItemsSource = null;
             CartProductsListView.ItemsSource = cart.Products;
 
-            // Obliczamy i wyświetlamy cenę całkowitą
             var totalPrice = _shoppingCartController.GetProductsPriceSum(_userId);
             TotalPriceTextBlock.Text = $"{totalPrice:C}";
 
@@ -65,7 +64,7 @@ namespace SklepInternetowy_WPF.View
                 _shoppingCartController.RemoveProductFromCart(_userId, product.ProductID);
                 SetStatusMessage($"Produkt {product.Name} został usunięty z koszyka.", false);
                 await Task.Delay(3000);
-                LoadCartProducts(); // Odśwież listę produktów
+                LoadCartProducts(); 
             }
         }
 
@@ -73,12 +72,11 @@ namespace SklepInternetowy_WPF.View
         {
             try
             {
-                var order = _shoppingCartController.FinalizeOrder(_userId);
-
-                
+                var order = await Task.Run(() => _shoppingCartController.FinalizeOrder(_userId));
+               
                 SetStatusMessage($"Zamówienie zostało złożone. Cena całkowita: {order.Price:C}.", false);
                 await Task.Delay(3000);
-                LoadCartProducts(); // Opróżnij koszyk po finalizacji
+                LoadCartProducts(); 
             }
             catch (InvalidOperationException ex)
             {
@@ -92,14 +90,14 @@ namespace SklepInternetowy_WPF.View
             var gridView = CartGridView;
             if (listView == null || gridView == null) return;
 
-            // Obliczamy dostępne miejsce na kolumny
-            var totalWidth = listView.ActualWidth - SystemParameters.VerticalScrollBarWidth; // Odejmujemy scrollbar
+            
+            var totalWidth = listView.ActualWidth - SystemParameters.VerticalScrollBarWidth; 
             if (totalWidth > 0)
             {
-                // Proporcjonalne dostosowanie szerokości kolumn
-                gridView.Columns[0].Width = totalWidth * 0.4; // 40% dla "Nazwa"
-                gridView.Columns[1].Width = totalWidth * 0.3; // 30% dla "Cena"
-                gridView.Columns[2].Width = totalWidth * 0.3; // 30% dla "Akcja"
+                
+                gridView.Columns[0].Width = totalWidth * 0.4; 
+                gridView.Columns[1].Width = totalWidth * 0.3; 
+                gridView.Columns[2].Width = totalWidth * 0.3; 
             }
         }
 
