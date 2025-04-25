@@ -67,6 +67,13 @@ namespace Sklep_Internetowy___Dawid_Szczawiński.Data
                 new Product { ProductID = 29, Name = "Spodenki treningowe", Price = 79.99m, ProductCategoryID = 4 },
                 new Product { ProductID = 30, Name = "Czapka baseball", Price = 49.99m, ProductCategoryID = 5 }
             );
+
+            modelBuilder.Entity<User>().HasData(
+            
+                new User {UserID = 1, Login = "admin", Password = "admin", isAdmin = true },
+                new User { UserID = 2, Login = "user", Password = "user", isAdmin = false }
+
+            );
         }
 
     }

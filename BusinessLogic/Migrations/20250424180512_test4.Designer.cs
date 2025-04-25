@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Sklep_Internetowy___Dawid_Szczawiński.Data;
 
@@ -11,9 +12,11 @@ using Sklep_Internetowy___Dawid_Szczawiński.Data;
 namespace Sklep_Internetowy___Dawid_Szczawiński.Migrations
 {
     [DbContext(typeof(ShopDbContext))]
-    partial class ShopDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250424180512_test4")]
+    partial class test4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -389,24 +392,6 @@ namespace Sklep_Internetowy___Dawid_Szczawiński.Migrations
                     b.HasKey("UserID");
 
                     b.ToTable("Users");
-
-                    b.HasData(
-                        new
-                        {
-                            UserID = 1,
-                            Login = "admin",
-                            Money = 0m,
-                            Password = "admin",
-                            isAdmin = true
-                        },
-                        new
-                        {
-                            UserID = 2,
-                            Login = "user",
-                            Money = 0m,
-                            Password = "user",
-                            isAdmin = false
-                        });
                 });
 
             modelBuilder.Entity("Sklep_Internetowy___Dawid_Szczawiński.Model.Order", b =>
