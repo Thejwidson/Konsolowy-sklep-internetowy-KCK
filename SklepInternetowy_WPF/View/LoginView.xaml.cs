@@ -74,26 +74,43 @@ namespace SklepInternetowy_WPF.View
         private async void RegisterButton_Click(object sender, RoutedEventArgs e)
         {
             LoginProgressBar.Visibility = Visibility.Visible;
-            MessageTextBlock.Text = ""; 
-            await Task.Delay(2000); 
+            MessageTextBlock.Text = "";
 
-            var username = UsernameTextBox.Text;
+            var username = UsernameTextBox.Text.Trim();
             var password = PasswordBox.Password;
+
+            if (string.IsNullOrWhiteSpace(username))
+            {
+                LoginProgressBar.Visibility = Visibility.Collapsed;
+                MessageTextBlock.Foreground = new SolidColorBrush(Colors.Red);
+                MessageTextBlock.Text = "Nazwa użytkownika nie może być pusta.";
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(password))
+            {
+                LoginProgressBar.Visibility = Visibility.Collapsed;
+                MessageTextBlock.Foreground = new SolidColorBrush(Colors.Red);
+                MessageTextBlock.Text = "Hasło nie może być puste.";
+                return;
+            }
+
+            await Task.Delay(2000); 
 
             try
             {
                 var user = _userController.Register(username, password);
-                LoginProgressBar.Visibility = Visibility.Collapsed; 
+                LoginProgressBar.Visibility = Visibility.Collapsed;
 
                 MessageTextBlock.Foreground = new SolidColorBrush(Colors.Green);
-                MessageTextBlock.Text = $"User {user.Login} registered successfully!";
-                await Task.Delay(1000); 
+                MessageTextBlock.Text = $"Użytkownik {user.Login} został pomyślnie zarejestrowany!";
+                await Task.Delay(1000);
             }
             catch (Exception ex)
             {
-                LoginProgressBar.Visibility = Visibility.Collapsed; 
+                LoginProgressBar.Visibility = Visibility.Collapsed;
                 MessageTextBlock.Foreground = new SolidColorBrush(Colors.Red);
-                MessageTextBlock.Text = $"Registration failed: {ex.Message}";
+                MessageTextBlock.Text = $"Rejestracja nie powiodła się: {ex.Message}";
             }
         }
 

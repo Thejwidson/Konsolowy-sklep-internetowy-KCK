@@ -85,33 +85,153 @@ namespace Sklep_Internetowy___Dawid_Szczawiński.Controller
 
             using (FileStream fs = new FileStream(filePath, FileMode.Create))
             {
-                iTextSharp.text.Document doc = new iTextSharp.text.Document();
+                iTextSharp.text.Document doc = new iTextSharp.text.Document(iTextSharp.text.PageSize.A4, 40, 40, 40, 40);
                 PdfWriter writer = PdfWriter.GetInstance(doc, fs);
                 doc.Open();
 
-                iTextSharp.text.Font titleFont = iTextSharp.text.FontFactory.GetFont(iTextSharp.text.FontFactory.TIMES_ROMAN, 16);
-                iTextSharp.text.Font normalFont = iTextSharp.text.FontFactory.GetFont(iTextSharp.text.FontFactory.TIMES_ROMAN, 12);
+                // Kolory
+                var primaryColor = new iTextSharp.text.BaseColor(102, 0, 204); // fioletowy
+                var lightGray = new iTextSharp.text.BaseColor(240, 240, 240); // jasnoszary
+                var softBlue = new iTextSharp.text.BaseColor(173, 216, 230); // pastelowy niebieski
 
-                doc.Add(new iTextSharp.text.Paragraph("Paragon", titleFont));
-                doc.Add(new iTextSharp.text.Paragraph($"Data: {order.OrderDate:yyyy-MM-dd HH:mm:ss}", normalFont));
-                doc.Add(new iTextSharp.text.Paragraph($"ID zamówienia: {order.OrderID}", normalFont));
-                doc.Add(new iTextSharp.text.Paragraph("\n"));
+                // Czcionki
+                var titleFont = FontFactory.GetFont(FontFactory.TIMES_ROMAN, 20, primaryColor);
+                var subtitleFont = FontFactory.GetFont(FontFactory.TIMES_ROMAN, 12, iTextSharp.text.BaseColor.DARK_GRAY);
+                var normalFont = FontFactory.GetFont(FontFactory.TIMES_ROMAN, 10, iTextSharp.text.BaseColor.BLACK);
+                var boldFont = FontFactory.GetFont(FontFactory.TIMES_ROMAN, 10, primaryColor);
 
-                PdfPTable table = new PdfPTable(3);
-                table.AddCell("Produkt");
-                table.AddCell("Cena");
-                table.AddCell("Ilość");
-
-                foreach (var product in order.Products)
+                // Nagłówek
+                var storeName = new Paragraph("Paragon - Sklep CandyShop", titleFont)
                 {
-                    table.AddCell(product.Name);
-                    table.AddCell($"{product.Price:C}");
-                    table.AddCell("1");
+                    Alignment = Element.ALIGN_CENTER,
+                    SpacingAfter = 10f
+                };
+                doc.Add(storeName);
+
+                var address = new Paragraph("ul. Wiejska 45A, 15-351 Białystok\nNIP: 542-020-87-21", subtitleFont)
+                {
+                    Alignment = Element.ALIGN_CENTER,
+                    SpacingAfter = 20f
+                };
+                doc.Add(address);
+
+                // Informacje o zamówieniu
+                PdfPTable orderInfoTable = new PdfPTable(2)
+                {
+                    WidthPercentage = 100
+                };
+                orderInfoTable.SetWidths(new float[] { 1, 2 });
+
+                PdfPCell infoCell(string text, iTextSharp.text.Font font, bool alignRight = false)
+                {
+                    return new PdfPCell(new Phrase(text, font))
+                    {
+                        Border = Rectangle.NO_BORDER,
+                        HorizontalAlignment = alignRight ? Element.ALIGN_RIGHT : Element.ALIGN_LEFT,
+                        PaddingBottom = 5
+                    };
                 }
 
-                doc.Add(table);
-                doc.Add(new iTextSharp.text.Paragraph("\n"));
-                doc.Add(new iTextSharp.text.Paragraph($"Suma: {order.Price:C}", titleFont));
+                orderInfoTable.AddCell(infoCell("Data:", boldFont));
+                orderInfoTable.AddCell(infoCell($"{order.OrderDate:yyyy-MM-dd HH:mm:ss}", normalFont));
+                orderInfoTable.AddCell(infoCell("ID zamówienia:", boldFont));
+                orderInfoTable.AddCell(infoCell($"{order.OrderID}", normalFont));
+                doc.Add(orderInfoTable);
+
+                doc.Add(new Paragraph("\n"));
+
+                // Tabela produktów
+                PdfPTable productTable = new PdfPTable(4)
+                {
+                    WidthPercentage = 100
+                };
+                productTable.SetWidths(new float[] { 4, 2, 1, 2 });
+
+                // Nagłówki tabeli
+                void AddHeaderCell(string text)
+                {
+                    var cell = new PdfPCell(new Phrase(text, boldFont))
+                    {
+                        BackgroundColor = softBlue,
+                        Padding = 8,
+                        HorizontalAlignment = Element.ALIGN_CENTER
+                    };
+                    productTable.AddCell(cell);
+                }
+
+                AddHeaderCell("Produkt");
+                AddHeaderCell("Cena");
+                AddHeaderCell("Ilość");
+                AddHeaderCell("Suma");
+
+                // Produkty
+                bool isEvenRow = true;
+                foreach (var product in order.Products)
+                {
+                    BaseColor backgroundColor = isEvenRow ? lightGray : BaseColor.WHITE;
+                    isEvenRow = !isEvenRow;
+
+                    PdfPCell productCell(string text)
+                    {
+                        return new PdfPCell(new Phrase(text, normalFont))
+                        {
+                            BackgroundColor = backgroundColor,
+                            Padding = 5,
+                            HorizontalAlignment = Element.ALIGN_CENTER
+                        };
+                    }
+
+                    productTable.AddCell(productCell(product.Name));
+                    productTable.AddCell(productCell($"{product.Price:C}"));
+                    productTable.AddCell(productCell("1"));
+                    productTable.AddCell(productCell($"{product.Price:C}"));
+                }
+
+                doc.Add(productTable);
+
+                // Suma
+                PdfPTable totalTable = new PdfPTable(2)
+                {
+                    WidthPercentage = 100,
+                    SpacingBefore = 20f
+                };
+                totalTable.SetWidths(new float[] { 4, 1 });
+
+                var totalLabelCell = new PdfPCell(new Phrase("Suma:", boldFont))
+                {
+                    Border = Rectangle.NO_BORDER,
+                    HorizontalAlignment = Element.ALIGN_RIGHT,
+                    PaddingTop = 10
+                };
+                var totalValueCell = new PdfPCell(new Phrase($"{order.Price:C}", titleFont))
+                {
+                    Border = Rectangle.NO_BORDER,
+                    HorizontalAlignment = Element.ALIGN_RIGHT,
+                    PaddingTop = 10
+                };
+
+                totalTable.AddCell(totalLabelCell);
+                totalTable.AddCell(totalValueCell);
+
+                doc.Add(totalTable);
+
+                // Stopka
+                var footerBackground = new PdfPTable(1)
+                {
+                    WidthPercentage = 100,
+                    SpacingBefore = 30f
+                };
+
+                var footerCell = new PdfPCell(new Phrase("Dziękujemy za zakupy w Candyshop!", boldFont))
+                {
+                    BackgroundColor = softBlue,
+                    Border = Rectangle.NO_BORDER,
+                    HorizontalAlignment = Element.ALIGN_CENTER,
+                    Padding = 10
+                };
+                footerBackground.AddCell(footerCell);
+
+                doc.Add(footerBackground);
 
                 doc.Close();
                 writer.Close();
@@ -119,6 +239,7 @@ namespace Sklep_Internetowy___Dawid_Szczawiński.Controller
 
             Console.WriteLine($"Paragon zapisany jako: {filePath}");
         }
+
 
 
 

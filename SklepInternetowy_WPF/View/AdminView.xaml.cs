@@ -167,14 +167,25 @@ namespace SklepInternetowy_WPF.View
         private void AddProductButton_Click(object sender, RoutedEventArgs e)
         {
             var productName = ProductNameTextBox.Text.Trim();
-            if (!decimal.TryParse(ProductPriceTextBox.Text, out var productPrice))
+            if (string.IsNullOrWhiteSpace(productName))
             {
-                SetStatusMessage("Please enter a valid price.", true);
+                SetStatusMessage("Product name cannot be empty.", true);
                 return;
             }
 
-            var selectedCategory = (ProductCategory)ProductCategoryComboBox.SelectedItem;
-            if (selectedCategory == null)
+            if (!decimal.TryParse(ProductPriceTextBox.Text, out var productPrice))
+            {
+                SetStatusMessage("Please enter a valid numeric price.", true);
+                return;
+            }
+
+            if (productPrice <= 0)
+            {
+                SetStatusMessage("Price must be greater than 0.", true);
+                return;
+            }
+
+            if (ProductCategoryComboBox.SelectedItem is not ProductCategory selectedCategory)
             {
                 SetStatusMessage("Please select a valid category.", true);
                 return;
@@ -182,10 +193,12 @@ namespace SklepInternetowy_WPF.View
 
             _productController.AddProduct(productName, productPrice, selectedCategory.Name);
             LoadProducts();
-            SetStatusMessage($"Product '{productName}' has been added.");
+            SetStatusMessage($"Product '{productName}' has been added successfully.");
+
             ProductNameTextBox.Clear();
             ProductPriceTextBox.Clear();
         }
+
 
         private void RemoveProductButton_Click(object sender, RoutedEventArgs e)
         {

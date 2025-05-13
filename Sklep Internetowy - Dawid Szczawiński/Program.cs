@@ -15,7 +15,7 @@ class Program
     static void Main()
     {     
         using var context = new ShopDbContext();
-        context.Database.Migrate();
+        //context.Database.Migrate();
 
         var userController = new UserController(context);
         var productController = new ProductController(context);

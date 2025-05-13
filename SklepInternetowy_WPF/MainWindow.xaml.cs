@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MaterialDesignThemes.Wpf;
+using Hardcodet.Wpf.TaskbarNotification;
 
 namespace SklepInternetowy_WPF
 {
@@ -25,6 +26,7 @@ namespace SklepInternetowy_WPF
         private readonly ProductController _productController;
         private readonly ProductCategoryController _productCategoryController;
         private readonly ShoppingCartController _shoppingCartController;
+        private TaskbarIcon _trayIcon;
 
 
         public MainWindow()
@@ -36,6 +38,7 @@ namespace SklepInternetowy_WPF
             _productController = new ProductController(_context);
             _productCategoryController = new ProductCategoryController(_context);
             _shoppingCartController = new ShoppingCartController(_context);
+            _trayIcon = (TaskbarIcon)FindResource("MyTrayIcon");
 
             SwitchView(new View.LoginView(this, _userController));
         }
@@ -55,6 +58,23 @@ namespace SklepInternetowy_WPF
         {
             var userView = new View.UserView(currentUser, _productController, _productCategoryController, _shoppingCartController, _userController, this);
             SwitchView(userView);
+        }
+
+        protected override void OnStateChanged(EventArgs e)
+        {
+            base.OnStateChanged(e);
+
+            if (WindowState == WindowState.Minimized)
+            {
+                this.Hide();
+                _trayIcon.Visibility = Visibility.Visible;
+            }
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            _trayIcon.Dispose(); // zwolnij zasoby
+            base.OnClosed(e);
         }
 
 

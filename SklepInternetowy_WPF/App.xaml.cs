@@ -1,19 +1,29 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Sklep_Internetowy___Dawid_Szczawiński.Controller;
-using Sklep_Internetowy___Dawid_Szczawiński.Data;
-using SklepInternetowy_WPF.View;
-using System.Configuration;
-using System.Data;
-using System.Windows;
+﻿using System.Windows;
 
 namespace SklepInternetowy_WPF
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
     public partial class App : Application
     {
-        
-    }
+        private void ShowWindow_Click(object sender, RoutedEventArgs e)
+        {
+            if (Current.MainWindow != null)
+            {
+                Current.MainWindow.Show();
+                Current.MainWindow.WindowState = WindowState.Normal;
+                Current.MainWindow.Activate();
+            }
+        }
 
+        private void ExitApplication_Click(object sender, RoutedEventArgs e)
+        {
+            if (Current.MainWindow is MainWindow mainWindow)
+            {
+                mainWindow.Close(); // Zamyka i sprząta tray icon
+            }
+            else
+            {
+                Shutdown();
+            }
+        }
+    }
 }
