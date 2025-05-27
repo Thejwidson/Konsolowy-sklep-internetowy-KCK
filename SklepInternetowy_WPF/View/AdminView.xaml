@@ -4,10 +4,16 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SklepInternetowy_WPF.View"
+             xmlns:localization="clr-namespace:SklepInternetowy_WPF.Localization"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="800"
              Background="{DynamicResource MaterialDesignBackground}">
+
+    <UserControl.Resources>
+        <localization:LocalizationConverter x:Key="LocalizationConverter" />
+    </UserControl.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -20,7 +26,7 @@
 
         <!-- Przyciski -->
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10" HorizontalAlignment="Right">
-            <Button Content="Logout"
+            <Button Content="{Binding Source={x:Static localization:LocalizationManager.Instance}, Path=., Converter={StaticResource LocalizationConverter}, ConverterParameter=Logout}"
                     Style="{StaticResource MaterialDesignRaisedButton}"
                     Click="LogoutButton_Click"
                     Width="100"
@@ -30,26 +36,28 @@
         <!-- Główna zawartość -->
         <TabControl Grid.Row="1">
             <!-- Tab for Categories -->
-            <TabItem Header="Manage Categories">
+            <TabItem Header="{Binding Source={x:Static localization:LocalizationManager.Instance}, Path=., Converter={StaticResource LocalizationConverter}, ConverterParameter=ManageCategories}">
                 <Grid Margin="10">
                     <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <!-- Add Category Section -->
-                        <TextBlock Text="Add Category" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"
+                        <TextBlock Text="{Binding Source={x:Static localization:LocalizationManager.Instance}, Path=., Converter={StaticResource LocalizationConverter}, ConverterParameter=AddCategory}" 
+                                   FontSize="18" FontWeight="Bold" Margin="0,0,0,10"
                                    Foreground="{DynamicResource PrimaryHueDarkBrush}" />
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                             <TextBox x:Name="CategoryNameTextBox"
                                      Width="300"
-                                     materialDesign:HintAssist.Hint="Category Name"
+                                     materialDesign:HintAssist.Hint="{Binding Source={x:Static localization:LocalizationManager.Instance}, Path=., Converter={StaticResource LocalizationConverter}, ConverterParameter=CategoryName}"
                                      Style="{StaticResource MaterialDesignOutlinedTextBox}" />
-                            <Button Content="Add"
+                            <Button Content="{Binding Source={x:Static localization:LocalizationManager.Instance}, Path=., Converter={StaticResource LocalizationConverter}, ConverterParameter=Add}"
                                     Style="{StaticResource MaterialDesignFlatButton}"
                                     Margin="10,0,0,0"
                                     Click="AddCategoryButton_Click" />
                         </StackPanel>
 
                         <!-- Remove Category Section -->
-                        <TextBlock Text="Remove Category" FontSize="18" FontWeight="Bold" Margin="20,10,0,10"
-           Foreground="{DynamicResource PrimaryHueDarkBrush}" />
+                        <TextBlock Text="{Binding Source={x:Static localization:LocalizationManager.Instance}, Path=., Converter={StaticResource LocalizationConverter}, ConverterParameter=RemoveCategory}" 
+                                   FontSize="18" FontWeight="Bold" Margin="20,10,0,10"
+                                   Foreground="{DynamicResource PrimaryHueDarkBrush}" />
                         <ItemsControl x:Name="CategoryRadioList" Margin="0,0,0,10">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
@@ -57,64 +65,68 @@
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
-                        <Button Content="Remove Selected"
-        Style="{StaticResource MaterialDesignFlatButton}"
-        Margin="0,10,0,0"
-        Click="RemoveSingleCategoryButton_Click" />
+                        <Button Content="{Binding Source={x:Static localization:LocalizationManager.Instance}, Path=., Converter={StaticResource LocalizationConverter}, ConverterParameter=RemoveSelected}"
+                                Style="{StaticResource MaterialDesignFlatButton}"
+                                Margin="0,10,0,0"
+                                Click="RemoveSingleCategoryButton_Click" />
                     </StackPanel>
                 </Grid>
             </TabItem>
 
             <!-- Tab for Products -->
-            <TabItem Header="Manage Products">
+            <TabItem Header="{Binding Source={x:Static localization:LocalizationManager.Instance}, Path=., Converter={StaticResource LocalizationConverter}, ConverterParameter=ManageProducts}">
                 <Grid Margin="10">
                     <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <!-- Add Product Section -->
-                        <TextBlock Text="Add Product" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"
+                        <TextBlock Text="{Binding Source={x:Static localization:LocalizationManager.Instance}, Path=., Converter={StaticResource LocalizationConverter}, ConverterParameter=AddProduct}" 
+                                   FontSize="18" FontWeight="Bold" Margin="0,0,0,10"
                                    Foreground="{DynamicResource PrimaryHueDarkBrush}" />
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                             <TextBox x:Name="ProductNameTextBox"
                                      Width="200"
                                      Margin="0,0,5,0"
-                                     materialDesign:HintAssist.Hint="Product Name"
+                                     materialDesign:HintAssist.Hint="{Binding Source={x:Static localization:LocalizationManager.Instance}, Path=., Converter={StaticResource LocalizationConverter}, ConverterParameter=ProductName}"
                                      Style="{StaticResource MaterialDesignOutlinedTextBox}" />
                             <TextBox x:Name="ProductPriceTextBox"
                                      Width="100"
                                      Margin="0,0,5,0"
-                                     materialDesign:HintAssist.Hint="Price"
+                                     materialDesign:HintAssist.Hint="{Binding Source={x:Static localization:LocalizationManager.Instance}, Path=., Converter={StaticResource LocalizationConverter}, ConverterParameter=Price}"
                                      Style="{StaticResource MaterialDesignOutlinedTextBox}" />
                             <ComboBox x:Name="ProductCategoryComboBox"
                                       Width="200"
                                       Margin="0,0,0,-20"
                                       Style="{StaticResource MaterialDesignComboBox}"
                                       DisplayMemberPath="Name" />
-                            <Button Content="Add"
+                            <Button Content="{Binding Source={x:Static localization:LocalizationManager.Instance}, Path=., Converter={StaticResource LocalizationConverter}, ConverterParameter=Add}"
                                     Style="{StaticResource MaterialDesignFlatButton}"
                                     Margin="10,0,0,0"
                                     Click="AddProductButton_Click" />
                         </StackPanel>
 
                         <!-- Remove Product Section -->
-                        <TextBlock Text="Remove Product" FontSize="18" FontWeight="Bold" Margin="20,10,0,10"
+                        <TextBlock Text="{Binding Source={x:Static localization:LocalizationManager.Instance}, Path=., Converter={StaticResource LocalizationConverter}, ConverterParameter=RemoveProduct}" 
+                                   FontSize="18" FontWeight="Bold" Margin="20,10,0,10"
                                    Foreground="{DynamicResource PrimaryHueDarkBrush}" />
                         <ComboBox x:Name="ProductComboBox" Width="400"
                                   Style="{StaticResource MaterialDesignComboBox}"
                                   DisplayMemberPath="Name" />
-                        <Button Content="Remove"
+                        <Button Content="{Binding Source={x:Static localization:LocalizationManager.Instance}, Path=., Converter={StaticResource LocalizationConverter}, ConverterParameter=Remove}"
                                 Style="{StaticResource MaterialDesignFlatButton}"
                                 Margin="0,10,0,0"
                                 Click="RemoveProductButton_Click" />
                     </StackPanel>
                 </Grid>
             </TabItem>
-            <TabItem Header="Manage Users">
+
+            <TabItem Header="{Binding Source={x:Static localization:LocalizationManager.Instance}, Path=., Converter={StaticResource LocalizationConverter}, ConverterParameter=ManageUsers}">
                 <Grid Margin="10">
                     <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <TextBlock Text="User List" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"
-                       Foreground="{DynamicResource PrimaryHueDarkBrush}" />
+                        <TextBlock Text="{Binding Source={x:Static localization:LocalizationManager.Instance}, Path=., Converter={StaticResource LocalizationConverter}, ConverterParameter=UserList}" 
+                                   FontSize="18" FontWeight="Bold" Margin="0,0,0,10"
+                                   Foreground="{DynamicResource PrimaryHueDarkBrush}" />
                         <ListBox x:Name="UserListBox" Width="400" Height="200"
-                     DisplayMemberPath="Login"
-                     Style="{StaticResource MaterialDesignListBox}" />
+                                 DisplayMemberPath="Login"
+                                 Style="{StaticResource MaterialDesignListBox}" />
                     </StackPanel>
                 </Grid>
             </TabItem>

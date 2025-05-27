@@ -1,7 +1,9 @@
 ﻿using Sklep_Internetowy___Dawid_Szczawiński.Controller;
 using Sklep_Internetowy___Dawid_Szczawiński.Model;
+using SklepInternetowy_WPF.Localization;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -35,19 +37,32 @@ namespace SklepInternetowy_WPF.View
 
             LoadCategories();
             LoadProducts();
-            
+
             _mainWindow = mainWindow;
             _userController = userController;
             LoadUsers();
+
+            // Nasłuchiwanie zmian w lokalizacji
+            LocalizationManager.Instance.PropertyChanged += OnLocalizationChanged;
+        }
+
+        private void OnLocalizationChanged(object sender, PropertyChangedEventArgs e)
+        {
+            // Odświeżenie bindingów po zmianie języka
+            if (e.PropertyName == "Item[]")
+            {
+                // Wymuś odświeżenie wszystkich bindingów
+                this.DataContext = null;
+                this.DataContext = this;
+            }
         }
 
         private void LoadCategories()
         {
             var categories = _productCategoryController.GetAllCategories();
-            ProductCategoryComboBox.ItemsSource = categories; 
-            CategoryRadioList.ItemsSource = categories; 
+            ProductCategoryComboBox.ItemsSource = categories;
+            CategoryRadioList.ItemsSource = categories;
         }
-
 
         // Załadowanie kategorii do ComboBox
         /*private void LoadCategories()
@@ -73,13 +88,13 @@ namespace SklepInternetowy_WPF.View
             var categoryName = CategoryNameTextBox.Text.Trim();
             if (string.IsNullOrWhiteSpace(categoryName))
             {
-                SetStatusMessage("Please enter a valid category name.", true);
+                SetStatusMessage(LocalizationManager.Instance["PleaseEnterValidCategoryName"], true);
                 return;
             }
 
             _productCategoryController.AddCategory(categoryName);
             LoadCategories();
-            SetStatusMessage($"Category '{categoryName}' has been added.");
+            SetStatusMessage(string.Format(LocalizationManager.Instance["CategoryHasBeenAdded"], categoryName));
             CategoryNameTextBox.Clear();
         }
 
@@ -88,13 +103,13 @@ namespace SklepInternetowy_WPF.View
             var selectedCategory = (ProductCategory)CategoryComboBox.SelectedItem;
             if (selectedCategory == null)
             {
-                SetStatusMessage("Please select a category to remove.", true);
+                SetStatusMessage(LocalizationManager.Instance["PleaseSelectCategoryToRemove"], true);
                 return;
             }
 
             _productCategoryController.RemoveCategory(selectedCategory.ProductCategoryID);
             LoadCategories();
-            SetStatusMessage($"Category '{selectedCategory.Name}' has been removed.");
+            SetStatusMessage(string.Format(LocalizationManager.Instance["CategoryHasBeenRemoved"], selectedCategory.Name));
         }*/
 
         private void RemoveSingleCategoryButton_Click(object sender, RoutedEventArgs e)
@@ -118,28 +133,27 @@ namespace SklepInternetowy_WPF.View
 
             if (selectedCategory == null)
             {
-                SetStatusMessage("Proszę wybrać kategorię do usunięcia.", true);
+                SetStatusMessage(LocalizationManager.Instance["PleaseSelectCategoryToRemove"], true);
                 return;
             }
 
             var result = MessageBox.Show(
-                $"Czy na pewno chcesz usunąć kategorię '{selectedCategory.Name}'?",
-                "Potwierdzenie usunięcia",
+                string.Format(LocalizationManager.Instance["ConfirmCategoryRemoval"], selectedCategory.Name),
+                LocalizationManager.Instance["ConfirmDeletion"],
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Warning
             );
 
             if (result != MessageBoxResult.Yes)
             {
-                SetStatusMessage("Usuwanie anulowane.");
+                SetStatusMessage(LocalizationManager.Instance["RemovalCancelled"]);
                 return;
             }
-
 
             _productCategoryController.RemoveCategory(selectedCategory.ProductCategoryID);
 
             LoadCategories();
-            SetStatusMessage($"Kategoria '{selectedCategory.Name}' została usunięta.");
+            SetStatusMessage(string.Format(LocalizationManager.Instance["CategoryHasBeenRemoved"], selectedCategory.Name));
         }
 
         private static T FindVisualChild<T>(DependencyObject obj) where T : DependencyObject
@@ -161,72 +175,68 @@ namespace SklepInternetowy_WPF.View
             return null;
         }
 
-
-
-
         private void AddProductButton_Click(object sender, RoutedEventArgs e)
         {
             var productName = ProductNameTextBox.Text.Trim();
             if (string.IsNullOrWhiteSpace(productName))
             {
-                SetStatusMessage("Product name cannot be empty.", true);
+                SetStatusMessage(LocalizationManager.Instance["ProductNameCannotBeEmpty"], true);
                 return;
             }
 
             if (!decimal.TryParse(ProductPriceTextBox.Text, out var productPrice))
             {
-                SetStatusMessage("Please enter a valid numeric price.", true);
+                SetStatusMessage(LocalizationManager.Instance["PleaseEnterValidPrice"], true);
                 return;
             }
 
             if (productPrice <= 0)
             {
-                SetStatusMessage("Price must be greater than 0.", true);
+                SetStatusMessage(LocalizationManager.Instance["PriceMustBeGreaterThanZero"], true);
                 return;
             }
 
             if (ProductCategoryComboBox.SelectedItem is not ProductCategory selectedCategory)
             {
-                SetStatusMessage("Please select a valid category.", true);
+                SetStatusMessage(LocalizationManager.Instance["PleaseSelectValidCategory"], true);
                 return;
             }
 
             _productController.AddProduct(productName, productPrice, selectedCategory.Name);
             LoadProducts();
-            SetStatusMessage($"Product '{productName}' has been added successfully.");
+            SetStatusMessage(string.Format(LocalizationManager.Instance["ProductHasBeenAdded"], productName));
 
             ProductNameTextBox.Clear();
             ProductPriceTextBox.Clear();
         }
-
 
         private void RemoveProductButton_Click(object sender, RoutedEventArgs e)
         {
             var selectedProduct = ProductComboBox.SelectedItem;
             if (selectedProduct == null)
             {
-                SetStatusMessage("Please select a product to remove.", true);
+                SetStatusMessage(LocalizationManager.Instance["PleaseSelectProductToRemove"], true);
                 return;
             }
 
             var product = (selectedProduct as dynamic).Product;
 
             var result = MessageBox.Show(
-                $"Are you sure you want to remove the product '{product.Name}'?",
-                "Confirm Deletion",
+                string.Format(LocalizationManager.Instance["ConfirmProductRemoval"], product.Name),
+                LocalizationManager.Instance["ConfirmDeletion"],
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Warning
             );
 
             if (result != MessageBoxResult.Yes)
             {
-                SetStatusMessage("Product removal cancelled.");
+                SetStatusMessage(LocalizationManager.Instance["ProductRemovalCancelled"]);
                 return;
             }
 
             _productController.RemoveProduct(product.ProductID);
             LoadProducts();
-            SetStatusMessage($"Product '{product.Name}' has been removed.");
+            SetStatusMessage(string.Format(LocalizationManager.Instance["ProductHasBeenRemoved"], product.Name));
         }
 
         private async void SetStatusMessage(string message, bool isError = false)
@@ -248,13 +258,13 @@ namespace SklepInternetowy_WPF.View
 
                 if (UserListBox == null)
                 {
-                    MessageBox.Show("Error: UserListBox is null!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(LocalizationManager.Instance["ErrorUserListBoxNull"], LocalizationManager.Instance["Error"], MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
                 if (users == null)
                 {
-                    MessageBox.Show("Error: GetUsers() returned null!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(LocalizationManager.Instance["ErrorGetUsersNull"], LocalizationManager.Instance["Error"], MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
@@ -262,10 +272,9 @@ namespace SklepInternetowy_WPF.View
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error loading users: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(string.Format(LocalizationManager.Instance["ErrorLoadingUsers"], ex.Message), LocalizationManager.Instance["Error"], MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-
 
         private void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
@@ -274,4 +283,3 @@ namespace SklepInternetowy_WPF.View
         }
     }
 }
-

@@ -246,4 +246,112 @@
 	<data name="Logout" xml:space="preserve">
   <value>Logout</value>
 </data>
+	<!-- Elementy interfejsu użytkownika -->
+	<data name="Logout" xml:space="preserve">
+  <value>Logout</value>
+</data>
+	<data name="ManageCategories" xml:space="preserve">
+  <value>Manage Categories</value>
+</data>
+	<data name="ManageProducts" xml:space="preserve">
+  <value>Manage Products</value>
+</data>
+	<data name="ManageUsers" xml:space="preserve">
+  <value>Manage Users</value>
+</data>
+	<data name="AddCategory" xml:space="preserve">
+  <value>Add Category</value>
+</data>
+	<data name="RemoveCategory" xml:space="preserve">
+  <value>Remove Category</value>
+</data>
+	<data name="AddProduct" xml:space="preserve">
+  <value>Add Product</value>
+</data>
+	<data name="RemoveProduct" xml:space="preserve">
+  <value>Remove Product</value>
+</data>
+	<data name="CategoryName" xml:space="preserve">
+  <value>Category Name</value>
+</data>
+	<data name="ProductName" xml:space="preserve">
+  <value>Product Name</value>
+</data>
+	<data name="Price" xml:space="preserve">
+  <value>Price</value>
+</data>
+	<data name="Add" xml:space="preserve">
+  <value>Add</value>
+</data>
+	<data name="Remove" xml:space="preserve">
+  <value>Remove</value>
+</data>
+	<data name="RemoveSelected" xml:space="preserve">
+  <value>Remove Selected</value>
+</data>
+	<data name="UserList" xml:space="preserve">
+  <value>User List</value>
+</data>
+
+	<!-- Komunikaty i walidacja -->
+	<data name="PleaseEnterValidCategoryName" xml:space="preserve">
+  <value>Please enter a valid category name.</value>
+</data>
+	<data name="CategoryHasBeenAdded" xml:space="preserve">
+  <value>Category '{0}' has been added.</value>
+</data>
+	<data name="PleaseSelectCategoryToRemove" xml:space="preserve">
+  <value>Please select a category to remove.</value>
+</data>
+	<data name="ConfirmCategoryRemoval" xml:space="preserve">
+  <value>Are you sure you want to remove the category '{0}'?</value>
+</data>
+	<data name="ConfirmDeletion" xml:space="preserve">
+  <value>Confirm Deletion</value>
+</data>
+	<data name="RemovalCancelled" xml:space="preserve">
+  <value>Removal cancelled.</value>
+</data>
+	<data name="CategoryHasBeenRemoved" xml:space="preserve">
+  <value>Category '{0}' has been removed.</value>
+</data>
+	<data name="ProductNameCannotBeEmpty" xml:space="preserve">
+  <value>Product name cannot be empty.</value>
+</data>
+	<data name="PleaseEnterValidPrice" xml:space="preserve">
+  <value>Please enter a valid numeric price.</value>
+</data>
+	<data name="PriceMustBeGreaterThanZero" xml:space="preserve">
+  <value>Price must be greater than 0.</value>
+</data>
+	<data name="PleaseSelectValidCategory" xml:space="preserve">
+  <value>Please select a valid category.</value>
+</data>
+	<data name="ProductHasBeenAdded" xml:space="preserve">
+  <value>Product '{0}' has been added successfully.</value>
+</data>
+	<data name="PleaseSelectProductToRemove" xml:space="preserve">
+  <value>Please select a product to remove.</value>
+</data>
+	<data name="ConfirmProductRemoval" xml:space="preserve">
+  <value>Are you sure you want to remove the product '{0}'?</value>
+</data>
+	<data name="ProductRemovalCancelled" xml:space="preserve">
+  <value>Product removal cancelled.</value>
+</data>
+	<data name="ProductHasBeenRemoved" xml:space="preserve">
+  <value>Product '{0}' has been removed.</value>
+</data>
+	<data name="Error" xml:space="preserve">
+  <value>Error</value>
+</data>
+	<data name="ErrorUserListBoxNull" xml:space="preserve">
+  <value>Error: UserListBox is null!</value>
+</data>
+	<data name="ErrorGetUsersNull" xml:space="preserve">
+  <value>Error: GetUsers() returned null!</value>
+</data>
+	<data name="ErrorLoadingUsers" xml:space="preserve">
+  <value>Error loading users: {0}</value>
+</data>
 </root>
