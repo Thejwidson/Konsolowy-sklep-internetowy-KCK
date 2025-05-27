@@ -1,4 +1,5 @@
 ﻿using Sklep_Internetowy___Dawid_Szczawiński.Controller;
+using SklepInternetowy_WPF.Localization;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -17,43 +18,47 @@ using System.Windows.Shapes;
 
 namespace SklepInternetowy_WPF.View
 {
-    /// <summary>
-    /// Interaction logic for LoginView.xaml
-    /// </summary>
     public partial class LoginView : UserControl
     {
         private readonly MainWindow _mainWindow;
         private readonly UserController _userController;
-        private readonly ProductController _productController;
-        private readonly ProductCategoryController _productCategoryController;
-        private readonly ShoppingCartController _shoppingCartController;
-
 
         public LoginView(MainWindow mainWindow, UserController userController)
         {
             InitializeComponent();
             _mainWindow = mainWindow;
             _userController = userController;
-            _mainWindow = mainWindow;
+
+            // Set default language
+            LanguageComboBox.SelectedIndex = 0;
+        }
+
+        private void LanguageComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (LanguageComboBox.SelectedItem is ComboBoxItem selectedItem)
+            {
+                string languageCode = selectedItem.Tag.ToString();
+                LocalizationManager.Instance.SetCulture(languageCode);
+            }
         }
 
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
             LoginProgressBar.Visibility = Visibility.Visible;
-            MessageTextBlock.Text = ""; 
-            await Task.Delay(2000); 
+            MessageTextBlock.Text = "";
+            await Task.Delay(2000);
 
             var username = UsernameTextBox.Text;
             var password = PasswordBox.Password;
 
             var user = _userController.Login(username, password);
-            LoginProgressBar.Visibility = Visibility.Collapsed; 
+            LoginProgressBar.Visibility = Visibility.Collapsed;
 
             if (user != null)
             {
                 MessageTextBlock.Foreground = new SolidColorBrush(Colors.Green);
-                MessageTextBlock.Text = $"Welcome, {user.Login}!";
-                await Task.Delay(1000); 
+                MessageTextBlock.Text = string.Format(LocalizationManager.Instance["WelcomeMessage"], user.Login);
+                await Task.Delay(1000);
 
                 if (user.isAdmin)
                 {
@@ -67,7 +72,7 @@ namespace SklepInternetowy_WPF.View
             else
             {
                 MessageTextBlock.Foreground = new SolidColorBrush(Colors.Red);
-                MessageTextBlock.Text = "Invalid credentials! Please try again.";
+                MessageTextBlock.Text = LocalizationManager.Instance["InvalidCredentials"];
             }
         }
 
@@ -83,7 +88,7 @@ namespace SklepInternetowy_WPF.View
             {
                 LoginProgressBar.Visibility = Visibility.Collapsed;
                 MessageTextBlock.Foreground = new SolidColorBrush(Colors.Red);
-                MessageTextBlock.Text = "Nazwa użytkownika nie może być pusta.";
+                MessageTextBlock.Text = LocalizationManager.Instance["UsernameEmpty"];
                 return;
             }
 
@@ -91,11 +96,11 @@ namespace SklepInternetowy_WPF.View
             {
                 LoginProgressBar.Visibility = Visibility.Collapsed;
                 MessageTextBlock.Foreground = new SolidColorBrush(Colors.Red);
-                MessageTextBlock.Text = "Hasło nie może być puste.";
+                MessageTextBlock.Text = LocalizationManager.Instance["PasswordEmpty"];
                 return;
             }
 
-            await Task.Delay(2000); 
+            await Task.Delay(2000);
 
             try
             {
@@ -103,24 +108,15 @@ namespace SklepInternetowy_WPF.View
                 LoginProgressBar.Visibility = Visibility.Collapsed;
 
                 MessageTextBlock.Foreground = new SolidColorBrush(Colors.Green);
-                MessageTextBlock.Text = $"Użytkownik {user.Login} został pomyślnie zarejestrowany!";
+                MessageTextBlock.Text = string.Format(LocalizationManager.Instance["RegistrationSuccess"], user.Login);
                 await Task.Delay(1000);
             }
             catch (Exception ex)
             {
                 LoginProgressBar.Visibility = Visibility.Collapsed;
                 MessageTextBlock.Foreground = new SolidColorBrush(Colors.Red);
-                MessageTextBlock.Text = $"Rejestracja nie powiodła się: {ex.Message}";
+                MessageTextBlock.Text = string.Format(LocalizationManager.Instance["RegistrationFailed"], ex.Message);
             }
-        }
-
-        public void ConsoleAppButton_Click(object sender, RoutedEventArgs e)
-        {
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = "Sklep_Internetowy___Dawid_Szczawiński.exe", 
-                UseShellExecute = true
-            });
         }
 
         private void ExitButton_Click(object sender, RoutedEventArgs e)

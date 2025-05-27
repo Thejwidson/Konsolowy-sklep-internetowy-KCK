@@ -5,25 +5,45 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SklepInternetowy_WPF.View"
+             xmlns:localization="clr-namespace:SklepInternetowy_WPF.Localization"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    
+
+    <UserControl.Resources>
+        <localization:LocalizationConverter x:Key="LocalizationConverter" />
+    </UserControl.Resources>
 
     <Grid Background="{DynamicResource MaterialDesignPaper}">
         <StackPanel x:Name="MenuStackPanel" HorizontalAlignment="Center" VerticalAlignment="Center" Width="400">
             <!-- Title / Header -->
-            
-            <TextBlock Text="User Menu" FontSize="30" FontWeight="Bold" 
-           Foreground="{DynamicResource PrimaryHueMidBrush}" TextAlignment="Center" />
+            <TextBlock Text="{Binding Source={x:Static localization:LocalizationManager.Instance}, Converter={StaticResource LocalizationConverter}, ConverterParameter=UserMenu}" 
+                       FontSize="30" 
+                       FontWeight="Bold" 
+                       Foreground="{DynamicResource PrimaryHueMidBrush}" 
+                       TextAlignment="Center" />
 
             <!-- Menu Buttons with Material Design style and Hover effect -->
-            <Button Content="Products" Margin="0,10,0,10" Click="ProductsButton_Click"/>
-            <Button Content="Shopping Cart" Margin="0,0,0,10" Click="ShoppingCartButton_Click"/>
-            <Button Content="View Order History" Margin="0,0,0,10" Click="OrderHistoryButton_Click"/>
-            <Button Content="Logout" Margin="0,0,0,10" Click="LogoutButton_Click"/>
+            <Button Content="{Binding Source={x:Static localization:LocalizationManager.Instance}, Converter={StaticResource LocalizationConverter}, ConverterParameter=Products}" 
+                    Margin="0,10,0,10" 
+                    Click="ProductsButton_Click"/>
+
+            <Button Content="{Binding Source={x:Static localization:LocalizationManager.Instance}, Converter={StaticResource LocalizationConverter}, ConverterParameter=ShoppingCart}" 
+                    Margin="0,0,0,10" 
+                    Click="ShoppingCartButton_Click"/>
+
+            <Button Content="{Binding Source={x:Static localization:LocalizationManager.Instance}, Converter={StaticResource LocalizationConverter}, ConverterParameter=ViewOrderHistory}" 
+                    Margin="0,0,0,10" 
+                    Click="OrderHistoryButton_Click"/>
+
+            <Button Content="{Binding Source={x:Static localization:LocalizationManager.Instance}, Converter={StaticResource LocalizationConverter}, ConverterParameter=Logout}" 
+                    Margin="0,0,0,10" 
+                    Click="LogoutButton_Click"/>
         </StackPanel>
 
         <!-- Display Area for Order History / Products -->
-        <ContentControl x:Name="ContentArea" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10"/> 
+        <ContentControl x:Name="ContentArea" 
+                        HorizontalAlignment="Stretch" 
+                        VerticalAlignment="Stretch" 
+                        Margin="10"/>
     </Grid>
 </UserControl>

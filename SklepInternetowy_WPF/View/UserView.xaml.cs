@@ -1,5 +1,6 @@
 ﻿using Sklep_Internetowy___Dawid_Szczawiński.Controller;
 using Sklep_Internetowy___Dawid_Szczawiński.Model;
+using SklepInternetowy_WPF.Localization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,9 +39,16 @@ namespace SklepInternetowy_WPF.View
             _shoppingCartController = shoppingCartController;
             _userController = userController;
             _mainWindow = mainWindow;
-            
-        }
 
+            // Subskrypcja na zmiany lokalizacji
+            LocalizationManager.Instance.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == "Item[]")
+                {
+                    UpdateLocalization();
+                }
+            };
+        }
 
         private void ShowProducts()
         {
@@ -81,6 +89,13 @@ namespace SklepInternetowy_WPF.View
         {
             var orderHistoryView = new OrderHistoryView(_shoppingCartController, _currentUser.UserID, _mainWindow, _userController);
             ContentArea.Content = orderHistoryView;
+        }
+
+        // Metoda do aktualizacji lokalizacji (wywołana przy zmianie języka)
+        private void UpdateLocalization()
+        {
+            // XAML automatycznie zaktualizuje teksty dzięki bindingom do LocalizationManager
+            // Ta metoda może być rozszerzona o dodatkową logikę jeśli będzie potrzebna
         }
     }
 }

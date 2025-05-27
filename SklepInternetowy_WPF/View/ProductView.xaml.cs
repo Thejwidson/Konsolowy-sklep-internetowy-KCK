@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Sklep_Internetowy___Dawid_Szczawiński.Controller;
 using Sklep_Internetowy___Dawid_Szczawiński.Model;
+using SklepInternetowy_WPF.Localization;
 
 namespace SklepInternetowy_WPF.View
 {
@@ -20,6 +23,7 @@ namespace SklepInternetowy_WPF.View
         public ProductView(ProductController productController, ProductCategoryController productCategoryController, ShoppingCartController shoppingCartController, int userId, MainWindow mainWindow, UserController userController)
         {
             InitializeComponent();
+            InitializeLocalization();
             InitializeComboBox();
             _mainWindow = mainWindow;
             _productController = productController;
@@ -30,22 +34,81 @@ namespace SklepInternetowy_WPF.View
             LoadCategories();
             LoadProducts();
             _userController = userController;
+
+            // Subskrybuj zmiany języka
+            LocalizationManager.Instance.PropertyChanged += OnLocalizationChanged;
+        }
+
+        private void InitializeLocalization()
+        {
+            // Ustawienie DataContext dla całego UserControl, aby używać LocalizationManager
+            this.DataContext = LocalizationManager.Instance;
+        }
+
+        private void OnLocalizationChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            // Odśwież kategorie po zmianie języka
+            if (e.PropertyName == "Item[]")
+            {
+                LoadCategories();
+                RefreshSortingComboBox();
+            }
+        }
+
+        private void RefreshSortingComboBox()
+        {
+            var selectedIndex = SortByPriceComboBox.SelectedIndex;
+
+            SortByPriceComboBox.Items.Clear();
+
+            var noSortingItem = new ComboBoxItem();
+            noSortingItem.SetBinding(ComboBoxItem.ContentProperty, new System.Windows.Data.Binding("Item[NoSorting]")
+            {
+                Source = LocalizationManager.Instance
+            });
+            SortByPriceComboBox.Items.Add(noSortingItem);
+
+            var priceAscItem = new ComboBoxItem();
+            priceAscItem.SetBinding(ComboBoxItem.ContentProperty, new System.Windows.Data.Binding("Item[PriceAscending]")
+            {
+                Source = LocalizationManager.Instance
+            });
+            SortByPriceComboBox.Items.Add(priceAscItem);
+
+            var priceDescItem = new ComboBoxItem();
+            priceDescItem.SetBinding(ComboBoxItem.ContentProperty, new System.Windows.Data.Binding("Item[PriceDescending]")
+            {
+                Source = LocalizationManager.Instance
+            });
+            SortByPriceComboBox.Items.Add(priceDescItem);
+
+            SortByPriceComboBox.SelectedIndex = selectedIndex;
         }
 
         private void LoadCategories()
         {
             var categories = _productCategoryController.GetAllCategoriesNames();
+            var selectedIndex = FilterByCategoryComboBox.SelectedIndex;
 
             FilterByCategoryComboBox.Items.Clear();
-            FilterByCategoryComboBox.Items.Add("Wszystkie kategorie");
+
+            // Dodaj "Wszystkie kategorie" z lokalizacją
+            var allCategoriesItem = new ComboBoxItem();
+            allCategoriesItem.SetBinding(ComboBoxItem.ContentProperty, new System.Windows.Data.Binding("Item[AllCategories]")
+            {
+                Source = LocalizationManager.Instance
+            });
+            FilterByCategoryComboBox.Items.Add(allCategoriesItem);
+
+            // Dodaj pozostałe kategorie
             foreach (var category in categories)
             {
-                FilterByCategoryComboBox.Items.Add(category);
+                FilterByCategoryComboBox.Items.Add(new ComboBoxItem { Content = category });
             }
 
-            FilterByCategoryComboBox.SelectedIndex = 0;
+            FilterByCategoryComboBox.SelectedIndex = selectedIndex >= 0 ? selectedIndex : 0;
         }
-        
+
         private void ProductsListView_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             var listView = sender as ListView;
@@ -53,14 +116,14 @@ namespace SklepInternetowy_WPF.View
             if (listView == null || gridView == null) return;
 
             //dostępne miejsce w ListView
-            var totalWidth = listView.ActualWidth - SystemParameters.VerticalScrollBarWidth; 
+            var totalWidth = listView.ActualWidth - SystemParameters.VerticalScrollBarWidth;
             if (totalWidth > 0)
             {
                 // Dynamiczne ustawianie szerokości kolumn
-                gridView.Columns[0].Width = totalWidth * 0.3; // 40% dla nazwy
+                gridView.Columns[0].Width = totalWidth * 0.3; // 30% dla nazwy
                 gridView.Columns[1].Width = totalWidth * 0.2; // 20% dla ceny
-                gridView.Columns[2].Width = totalWidth * 0.3; // 30% dla kategori
-                gridView.Columns[3].Width = totalWidth * 0.2; // 10% dla akcji
+                gridView.Columns[2].Width = totalWidth * 0.3; // 30% dla kategorii
+                gridView.Columns[3].Width = totalWidth * 0.2; // 20% dla akcji
             }
         }
 
@@ -97,22 +160,27 @@ namespace SklepInternetowy_WPF.View
                 filteredProducts = _productController.GetProductsByName(FilterByNameTextBox.Text);
             }
 
-            if (FilterByCategoryComboBox.SelectedIndex > 0) 
+            if (FilterByCategoryComboBox.SelectedIndex > 0)
             {
-                var selectedCategory = FilterByCategoryComboBox.SelectedItem.ToString();
-                var categoryObj = _productCategoryController.GetAllCategories()
-                    .FirstOrDefault(c => c.Name == selectedCategory);
-                if (categoryObj != null)
+                var selectedItem = FilterByCategoryComboBox.SelectedItem as ComboBoxItem;
+                var selectedCategory = selectedItem?.Content?.ToString();
+
+                if (!string.IsNullOrEmpty(selectedCategory))
                 {
-                    filteredProducts = _productController.GetProductsByCategory(categoryObj.ProductCategoryID);
+                    var categoryObj = _productCategoryController.GetAllCategories()
+                        .FirstOrDefault(c => c.Name == selectedCategory);
+                    if (categoryObj != null)
+                    {
+                        filteredProducts = _productController.GetProductsByCategory(categoryObj.ProductCategoryID);
+                    }
                 }
             }
 
-            if (SortByPriceComboBox.SelectedIndex == 1) 
+            if (SortByPriceComboBox.SelectedIndex == 1)
             {
                 filteredProducts = _productController.GetProductsByLowestPrice();
             }
-            else if (SortByPriceComboBox.SelectedIndex == 2) 
+            else if (SortByPriceComboBox.SelectedIndex == 2)
             {
                 filteredProducts = _productController.GetProductsByHighestPrice();
             }
@@ -130,20 +198,30 @@ namespace SklepInternetowy_WPF.View
                 var container = ProductsListView.ItemContainerGenerator.ContainerFromItem(product) as ListViewItem;
                 if (container != null)
                 {
-                    container.Tag = $"{product.Name} dodany do koszyka!";
+                    // Użyj zlokalizowanego tekstu
+                    var localizedMessage = string.Format(LocalizationManager.Instance["AddedToCart"], product.Name);
+                    container.Tag = localizedMessage;
                 }
 
-                
-                ClearTagAfterDelay(container, TimeSpan.FromSeconds(3));
+                ClearTagAfterDelay(container, System.TimeSpan.FromSeconds(3));
             }
         }
 
-        private async void ClearTagAfterDelay(ListViewItem item, TimeSpan delay)
+        private async void ClearTagAfterDelay(ListViewItem item, System.TimeSpan delay)
         {
             await Task.Delay(delay);
             if (item != null)
             {
                 item.Tag = string.Empty;
+            }
+        }
+
+        // Pamiętaj o anulowaniu subskrypcji przy zniszczeniu kontrolki
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            if (LocalizationManager.Instance != null)
+            {
+                LocalizationManager.Instance.PropertyChanged -= OnLocalizationChanged;
             }
         }
     }

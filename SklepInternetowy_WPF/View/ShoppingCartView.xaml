@@ -5,8 +5,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:local="clr-namespace:SklepInternetowy_WPF.View"
+             xmlns:localization="clr-namespace:SklepInternetowy_WPF.Localization"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+
+    <UserControl.Resources>
+        <localization:LocalizationConverter x:Key="LocalizationConverter" />
+    </UserControl.Resources>
+
     <Grid Background="{DynamicResource MaterialDesignPaper}">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
@@ -23,15 +29,15 @@
                   SizeChanged="CartProductsListView_SizeChanged">
             <ListView.View>
                 <GridView x:Name="CartGridView">
-                    <GridViewColumn Header="Nazwa"
+                    <GridViewColumn Header="{Binding Source={x:Static localization:LocalizationManager.Instance}, Converter={StaticResource LocalizationConverter}, ConverterParameter=Name}"
                                     DisplayMemberBinding="{Binding Name}"
                                     Width="150"/>
-                    <GridViewColumn Header="Cena"
+                    <GridViewColumn Header="{Binding Source={x:Static localization:LocalizationManager.Instance}, Converter={StaticResource LocalizationConverter}, ConverterParameter=Price}"
                                     DisplayMemberBinding="{Binding Price}" />
-                    <GridViewColumn Header="Akcja">
+                    <GridViewColumn Header="{Binding Source={x:Static localization:LocalizationManager.Instance}, Converter={StaticResource LocalizationConverter}, ConverterParameter=Action}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <Button Content="Usuń"
+                                <Button Content="{Binding Source={x:Static localization:LocalizationManager.Instance}, Converter={StaticResource LocalizationConverter}, ConverterParameter=Remove}"
                                         Style="{StaticResource MaterialDesignFlatButton}"
                                         Click="RemoveProductButton_Click"
                                         Tag="{Binding}" />
@@ -48,7 +54,7 @@
                     Margin="10"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Center">
-            <TextBlock Text="Cena całkowita:"
+            <TextBlock Text="{Binding Source={x:Static localization:LocalizationManager.Instance}, Converter={StaticResource LocalizationConverter}, ConverterParameter=TotalPrice}"
                        VerticalAlignment="Center"
                        Margin="0,0,10,0"
                        FontWeight="Bold" />
@@ -57,24 +63,22 @@
                        Margin="0,0,20,0"
                        FontWeight="Bold"
                        Foreground="{DynamicResource PrimaryHueMidBrush}" />
-
-            <Button Content="Powrót"
+            <Button Content="{Binding Source={x:Static localization:LocalizationManager.Instance}, Converter={StaticResource LocalizationConverter}, ConverterParameter=Back}"
                     Width="100"
                     Margin="0,0,10,0"
                     Style="{StaticResource MaterialDesignRaisedButton}"
                     Click="BackToUserViewButton_Click" />
-
-            <Button Content="Finalizuj Zamówienie"
+            <Button Content="{Binding Source={x:Static localization:LocalizationManager.Instance}, Converter={StaticResource LocalizationConverter}, ConverterParameter=FinalizeOrder}"
                     Width="200"
                     Style="{StaticResource MaterialDesignRaisedButton}"
                     Click="FinalizeOrderButton_Click" />
             <TextBlock x:Name="StatusMessageTextBlock"
-               FontSize="14"
-               Foreground="{DynamicResource PrimaryHueMidBrush}"
-               Text=""
-               TextWrapping="Wrap"
-               Margin="5,5,0,0"
-               HorizontalAlignment="Center" />
+                       FontSize="14"
+                       Foreground="{DynamicResource PrimaryHueMidBrush}"
+                       Text=""
+                       TextWrapping="Wrap"
+                       Margin="5,5,0,0"
+                       HorizontalAlignment="Center" />
         </StackPanel>
     </Grid>
 </UserControl>

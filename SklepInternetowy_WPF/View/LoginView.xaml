@@ -3,33 +3,45 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:loc="clr-namespace:SklepInternetowy_WPF.Localization"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
 
+    <UserControl.Resources>
+        <loc:LocalizationConverter x:Key="LocalizationConverter" />
+    </UserControl.Resources>
+
     <Grid Background="{DynamicResource MaterialDesignPaper}">
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Width="400">
-            <TextBlock Text="Candy Shop" FontSize="30" FontWeight="Bold" 
+            <TextBlock Text="{Binding Source={x:Static loc:LocalizationManager.Instance}, Path=.[AppTitle], Converter={StaticResource LocalizationConverter}, ConverterParameter=AppTitle}" 
+                       FontSize="30" FontWeight="Bold" 
                        Foreground="{DynamicResource PrimaryHueMidBrush}" TextAlignment="Center" />
+
+            <!-- Language Selection -->
+            <ComboBox x:Name="LanguageComboBox" 
+                      Width="200"
+                      Margin="0,10,0,0"
+                      SelectionChanged="LanguageComboBox_SelectionChanged">
+                <ComboBoxItem Content="{Binding Source={x:Static loc:LocalizationManager.Instance}, Path=.[English], Converter={StaticResource LocalizationConverter}, ConverterParameter=English}" Tag="en" />
+                <ComboBoxItem Content="{Binding Source={x:Static loc:LocalizationManager.Instance}, Path=.[Polish], Converter={StaticResource LocalizationConverter}, ConverterParameter=Polish}" Tag="pl" />
+            </ComboBox>
+
             <TextBox x:Name="UsernameTextBox" 
-                     materialDesign:HintAssist.Hint="Username" 
+                     materialDesign:HintAssist.Hint="{Binding Source={x:Static loc:LocalizationManager.Instance}, Path=.[Username], Converter={StaticResource LocalizationConverter}, ConverterParameter=Username}"
                      Margin="0,10,0,0" />
             <PasswordBox x:Name="PasswordBox" 
-                         materialDesign:HintAssist.Hint="Password" 
+                         materialDesign:HintAssist.Hint="{Binding Source={x:Static loc:LocalizationManager.Instance}, Path=.[Password], Converter={StaticResource LocalizationConverter}, ConverterParameter=Password}"
                          Margin="0,10,0,0" />
-            <Button Content="Login" 
+            <Button Content="{Binding Source={x:Static loc:LocalizationManager.Instance}, Path=.[Login], Converter={StaticResource LocalizationConverter}, ConverterParameter=Login}"
                     Margin="0,10,0,10" 
                     Click="LoginButton_Click" />
-            <Button Content="Register" 
+            <Button Content="{Binding Source={x:Static loc:LocalizationManager.Instance}, Path=.[Register], Converter={StaticResource LocalizationConverter}, ConverterParameter=Register}"
                     Click="RegisterButton_Click" />
-            <!-- <Button Content="Console App" 
-    Margin="0,10,0,10" 
-    Click="ConsoleAppButton_Click" /> -->
-            
-            <Button Content="Exit" 
+
+            <Button Content="{Binding Source={x:Static loc:LocalizationManager.Instance}, Path=.[Exit], Converter={StaticResource LocalizationConverter}, ConverterParameter=Exit}"
                     Margin="0,10,0,10" 
                     Click="ExitButton_Click" />
-            
 
             <!-- ProgressBar -->
             <ProgressBar x:Name="LoginProgressBar"

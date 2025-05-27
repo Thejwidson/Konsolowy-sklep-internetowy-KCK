@@ -4,11 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:loc="clr-namespace:SklepInternetowy_WPF.Localization"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="900">
 
-
     <UserControl.Resources>
+        <!-- Dodanie konwertera lokalizacji -->
+        <loc:LocalizationConverter x:Key="LocalizationConverter" />
+
         <!-- Styl eliminujący błędy dla ComboBoxItem -->
         <Style TargetType="ComboBoxItem">
             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
@@ -28,7 +31,7 @@
                     Margin="10"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center">
-            <Button Content="Powrót"
+            <Button Content="{Binding Source={x:Static loc:LocalizationManager.Instance}, Path=Item[Back]}"
                     Width="100"
                     Style="{StaticResource MaterialDesignRaisedButton}"
                     Margin="0,0,10,0"
@@ -38,7 +41,9 @@
                      Width="200"
                      Margin="0,0,10,0"
                      Style="{StaticResource MaterialDesignOutlinedTextBox}">
-                <md:HintAssist.Hint>Nazwa produktu</md:HintAssist.Hint>
+                <md:HintAssist.Hint>
+                    <Binding Source="{x:Static loc:LocalizationManager.Instance}" Path="Item[ProductName]" />
+                </md:HintAssist.Hint>
             </TextBox>
 
             <ComboBox x:Name="FilterByCategoryComboBox"
@@ -46,7 +51,7 @@
                       Margin="0,0,10,0"
                       Style="{StaticResource MaterialDesignOutlinedComboBox}"
                       SelectedIndex="0">
-                <ComboBoxItem Content="Wszystkie kategorie" />
+                <ComboBoxItem Content="{Binding Source={x:Static loc:LocalizationManager.Instance}, Path=Item[AllCategories]}" />
             </ComboBox>
 
             <ComboBox x:Name="SortByPriceComboBox"
@@ -54,12 +59,12 @@
                       Margin="0,0,10,0"
                       Style="{StaticResource MaterialDesignOutlinedComboBox}"
                       SelectedIndex="0">
-                <ComboBoxItem Content="Brak sortowania" />
-                <ComboBoxItem Content="Cena rosnąco" />
-                <ComboBoxItem Content="Cena malejąco" />
+                <ComboBoxItem Content="{Binding Source={x:Static loc:LocalizationManager.Instance}, Path=Item[NoSorting]}" />
+                <ComboBoxItem Content="{Binding Source={x:Static loc:LocalizationManager.Instance}, Path=Item[PriceAscending]}" />
+                <ComboBoxItem Content="{Binding Source={x:Static loc:LocalizationManager.Instance}, Path=Item[PriceDescending]}" />
             </ComboBox>
 
-            <Button Content="Filtruj"
+            <Button Content="{Binding Source={x:Static loc:LocalizationManager.Instance}, Path=Item[Filter]}"
                     Width="100"
                     Style="{StaticResource MaterialDesignRaisedButton}"
                     Click="ApplyFiltersButton_Click" />
@@ -73,13 +78,17 @@
           VerticalAlignment="Stretch">
             <ListView.View>
                 <GridView x:Name="ProductsGridView">
-                    <GridViewColumn Header="Nazwa" Width="150" DisplayMemberBinding="{Binding Name}" />
-                    <GridViewColumn Header="Cena" DisplayMemberBinding="{Binding Price}" />
-                    <GridViewColumn Header="Kategoria" DisplayMemberBinding="{Binding ProductCategory.Name}" />
-                    <GridViewColumn Header="Akcja">
+                    <GridViewColumn Header="{Binding Source={x:Static loc:LocalizationManager.Instance}, Path=Item[Name]}" 
+                                    Width="150" 
+                                    DisplayMemberBinding="{Binding Name}" />
+                    <GridViewColumn Header="{Binding Source={x:Static loc:LocalizationManager.Instance}, Path=Item[Price]}" 
+                                    DisplayMemberBinding="{Binding Price}" />
+                    <GridViewColumn Header="{Binding Source={x:Static loc:LocalizationManager.Instance}, Path=Item[Category]}" 
+                                    DisplayMemberBinding="{Binding ProductCategory.Name}" />
+                    <GridViewColumn Header="{Binding Source={x:Static loc:LocalizationManager.Instance}, Path=Item[Action]}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <Button Content="Dodaj do koszyka"
+                                <Button Content="{Binding Source={x:Static loc:LocalizationManager.Instance}, Path=Item[AddToCart]}"
                                 Style="{StaticResource MaterialDesignFlatButton}"
                                 Click="AddToCartButton_Click"
                                 Tag="{Binding}" />

@@ -16,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using SklepInternetowy_WPF.Localization;
 
 namespace SklepInternetowy_WPF.View
 {
@@ -31,7 +32,6 @@ namespace SklepInternetowy_WPF.View
         private readonly UserController _userController;
         private readonly MainWindow _mainWindow;
 
-
         public ObservableCollection<Product> CartProducts { get; set; }
 
         public ShoppingCartView(ProductController productController, ProductCategoryController productCategoryController, ShoppingCartController shoppingCartController, int userId, UserController userController, MainWindow mainWindow)
@@ -43,8 +43,19 @@ namespace SklepInternetowy_WPF.View
             _userId = userId;
             _userController = userController;
             _mainWindow = mainWindow;
+
+            // Subskrypcja na zmiany lokalizacji
+            LocalizationManager.Instance.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == "Item[]")
+                {
+                    UpdateLocalization();
+                }
+            };
+
             LoadCartProducts();
         }
+
         private void LoadCartProducts()
         {
             var cart = _shoppingCartController.GetOrCreateCart(_userId);
@@ -53,7 +64,6 @@ namespace SklepInternetowy_WPF.View
 
             var totalPrice = _shoppingCartController.GetProductsPriceSum(_userId);
             TotalPriceTextBlock.Text = $"{totalPrice:C}";
-
         }
 
         private async void RemoveProductButton_Click(object sender, RoutedEventArgs e)
@@ -62,9 +72,13 @@ namespace SklepInternetowy_WPF.View
             if (button?.Tag is Product product)
             {
                 _shoppingCartController.RemoveProductFromCart(_userId, product.ProductID);
-                SetStatusMessage($"Produkt {product.Name} został usunięty z koszyka.", false);
+
+                // Używamy zlokalizowanej wiadomości
+                var message = string.Format(LocalizationManager.Instance["ProductRemovedFromCart"], product.Name);
+                SetStatusMessage(message, false);
+
                 await Task.Delay(3000);
-                LoadCartProducts(); 
+                LoadCartProducts();
             }
         }
 
@@ -73,10 +87,13 @@ namespace SklepInternetowy_WPF.View
             try
             {
                 var order = await Task.Run(() => _shoppingCartController.FinalizeOrder(_userId));
-               
-                SetStatusMessage($"Zamówienie zostało złożone. Cena całkowita: {order.Price:C}.", false);
+
+                // Używamy zlokalizowanej wiadomości
+                var message = string.Format(LocalizationManager.Instance["OrderFinalized"], order.Price.ToString("C"));
+                SetStatusMessage(message, false);
+
                 await Task.Delay(3000);
-                LoadCartProducts(); 
+                LoadCartProducts();
             }
             catch (InvalidOperationException ex)
             {
@@ -90,14 +107,12 @@ namespace SklepInternetowy_WPF.View
             var gridView = CartGridView;
             if (listView == null || gridView == null) return;
 
-            
-            var totalWidth = listView.ActualWidth - SystemParameters.VerticalScrollBarWidth; 
+            var totalWidth = listView.ActualWidth - SystemParameters.VerticalScrollBarWidth;
             if (totalWidth > 0)
             {
-                
-                gridView.Columns[0].Width = totalWidth * 0.4; 
-                gridView.Columns[1].Width = totalWidth * 0.3; 
-                gridView.Columns[2].Width = totalWidth * 0.3; 
+                gridView.Columns[0].Width = totalWidth * 0.4;
+                gridView.Columns[1].Width = totalWidth * 0.3;
+                gridView.Columns[2].Width = totalWidth * 0.3;
             }
         }
 
@@ -116,6 +131,14 @@ namespace SklepInternetowy_WPF.View
         {
             var user = _userController.GetUser(_userId);
             _mainWindow.SwitchToUserView(user);
+        }
+
+        // Metoda do aktualizacji lokalizacji (wywołana przy zmianie języka)
+        private void UpdateLocalization()
+        {
+            // Wymuszenie odświeżenia bindingów - XAML automatycznie zaktualizuje teksty
+            // dzięki bindingom do LocalizationManager
+            LoadCartProducts(); // Odświeżenie może być potrzebne dla TotalPrice
         }
     }
 }
